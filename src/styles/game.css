@@ -1,0 +1,11 @@
+body, html {
+    height: 100%;
+    display: grid;
+    padding: 0px;
+    margin: 0px;
+    background: linear-gradient(lightblue, white);
+}
+
+canvas {
+  width: 100%;
+}

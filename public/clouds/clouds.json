@@ -1,0 +1,166 @@
+{
+	"textures": [
+		{
+			"image": "clouds.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 512,
+				"h": 496
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "cumulus-huge",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 512,
+						"h": 211
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 512,
+						"h": 211
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 512,
+						"h": 211
+					}
+				},
+				{
+					"filename": "cumulus-big3",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 234,
+						"h": 128
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 234,
+						"h": 128
+					},
+					"frame": {
+						"x": 0,
+						"y": 211,
+						"w": 234,
+						"h": 128
+					}
+				},
+				{
+					"filename": "cumulus-big2",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 190,
+						"h": 118
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 190,
+						"h": 118
+					},
+					"frame": {
+						"x": 234,
+						"y": 211,
+						"w": 190,
+						"h": 118
+					}
+				},
+				{
+					"filename": "cumulus-big1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 174,
+						"h": 157
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 174,
+						"h": 157
+					},
+					"frame": {
+						"x": 0,
+						"y": 339,
+						"w": 174,
+						"h": 157
+					}
+				},
+				{
+					"filename": "cumulus-small2",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 76,
+						"h": 51
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 76,
+						"h": 51
+					},
+					"frame": {
+						"x": 424,
+						"y": 211,
+						"w": 76,
+						"h": 51
+					}
+				},
+				{
+					"filename": "cumulus-small3",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 64,
+						"h": 41
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 64,
+						"h": 41
+					},
+					"frame": {
+						"x": 424,
+						"y": 262,
+						"w": 64,
+						"h": 41
+					}
+				},
+				{
+					"filename": "cumulus-small1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 54,
+						"h": 43
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 54,
+						"h": 43
+					},
+					"frame": {
+						"x": 424,
+						"y": 303,
+						"w": 54,
+						"h": 43
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://free-tex-packer.com",
+		"version": "0.6.6"
+	}
+}

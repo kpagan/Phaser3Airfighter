@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "version": "0.6.6"
+  },
+  "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\clouds",
+  "images": [],
+  "folders": [
+    "F:/Trasys/Development/Html5GameDev/Tiles/cumulus-clouds-frogatto"
+  ],
+  "packOptions": {
+    "textureName": "clouds",
+    "textureFormat": "png",
+    "removeFileExtension": true,
+    "prependFolderName": false,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "disableSmoothing": false,
+    "filter": "grayscale",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\clouds",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": false,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "MaxRectsPacker",
+    "packerMethod": "Smart"
+  }
+}
