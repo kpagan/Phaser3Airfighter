@@ -36,7 +36,26 @@
 			"",
 			"	update() {",
 			"	}",
-			"}",
+			"}"
+		],
+		"description": "Default class extending Phaser.Scene"
+    },
+
+	"Phaser Sprite class": {
+		"scope": "typescript",
+		"prefix": "arcsprite",
+		"body": [
+			"import Phaser from 'phaser'",
+			"",
+			"export default class ${1:className} extends Phaser.Physics.Arcade.Sprite {",
+			"",
+			"	constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {",
+			"		super(scene, x, y, texture, frame);",
+			"	}",
+			"",
+			"	update() {",
+			"	}",
+			"}"
 		],
 		"description": "Default class extending Phaser.Scene"
     }

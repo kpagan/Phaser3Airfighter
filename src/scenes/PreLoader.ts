@@ -8,6 +8,7 @@ export default class PreLoader extends Phaser.Scene {
 
     preload() {
         this.load.atlas('clouds', './clouds/clouds.png', './clouds/clouds.json');
+        this.load.atlas('player', './ships/ship.png', './ships/ship.json');
     }
 
     create() {

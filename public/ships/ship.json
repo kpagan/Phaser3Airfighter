@@ -1,0 +1,82 @@
+{
+	"textures": [
+		{
+			"image": "ship",
+			"format": "RGBA8888",
+			"size": {
+				"w": 120,
+				"h": 94
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "ship-01",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 125,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 27,
+						"w": 120,
+						"h": 34
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 34
+					}
+				},
+				{
+					"filename": "ship-05",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 125,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 27,
+						"w": 119,
+						"h": 26
+					},
+					"frame": {
+						"x": 0,
+						"y": 34,
+						"w": 119,
+						"h": 26
+					}
+				},
+				{
+					"filename": "ship-04",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 125,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 26,
+						"w": 118,
+						"h": 34
+					},
+					"frame": {
+						"x": 0,
+						"y": 60,
+						"w": 118,
+						"h": 34
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://free-tex-packer.com",
+		"version": "0.6.7"
+	}
+}

@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\ships",
+  "images": [
+    {
+      "name": "ship-01.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Warped Fast Ship Files/Warped Fast Ship Files/ship-sprites/ship-01.png",
+      "folder": ""
+    },
+    {
+      "name": "ship-04.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Warped Fast Ship Files/Warped Fast Ship Files/ship-sprites/ship-04.png",
+      "folder": ""
+    },
+    {
+      "name": "ship-05.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Warped Fast Ship Files/Warped Fast Ship Files/ship-sprites/ship-05.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "ship",
+    "textureFormat": "png",
+    "removeFileExtension": true,
+    "prependFolderName": false,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\ships",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": true,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "MaxRectsPacker",
+    "packerMethod": "Smart"
+  }
+}
