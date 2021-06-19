@@ -12,14 +12,14 @@
 				{
 					"filename": "ship-01",
 					"rotated": false,
-					"trimmed": true,
+					"trimmed": false,
 					"sourceSize": {
-						"w": 125,
-						"h": 76
+						"w": 120,
+						"h": 34
 					},
 					"spriteSourceSize": {
-						"x": 2,
-						"y": 27,
+						"x": 0,
+						"y": 0,
 						"w": 120,
 						"h": 34
 					},
@@ -33,14 +33,14 @@
 				{
 					"filename": "ship-05",
 					"rotated": false,
-					"trimmed": true,
+					"trimmed": false,
 					"sourceSize": {
-						"w": 125,
-						"h": 76
+						"w": 119,
+						"h": 26
 					},
 					"spriteSourceSize": {
-						"x": 3,
-						"y": 27,
+						"x": 0,
+						"y": 0,
 						"w": 119,
 						"h": 26
 					},
@@ -54,14 +54,14 @@
 				{
 					"filename": "ship-04",
 					"rotated": false,
-					"trimmed": true,
+					"trimmed": false,
 					"sourceSize": {
-						"w": 125,
-						"h": 76
+						"w": 118,
+						"h": 34
 					},
 					"spriteSourceSize": {
-						"x": 4,
-						"y": 26,
+						"x": 0,
+						"y": 0,
 						"w": 118,
 						"h": 34
 					},

@@ -1,16 +1,23 @@
 import Phaser from 'phaser'
+import '../sprites/Player';
 import Cloud from '../sprites/Cloud'
+import Player from '../sprites/Player';
 
 const KEY = 'clouds';
 
+type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
+
 export default class CloudScene extends Phaser.Scene {
     private cloudGroup!: Phaser.Physics.Arcade.Group;
+    private cursors!: CursorKeys;
+    private player?: Player;
 
     constructor() {
         super('cloud-scene')
     }
 
     preload() {
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
 
     create() {
@@ -27,10 +34,15 @@ export default class CloudScene extends Phaser.Scene {
             callback: () => this.addCloud()
         });
 
+        this.player = this.add.player(0, this.scale.height / 2);
+        this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
+        this.physics.world.setBoundsCollision();
     }
 
     update(t: number, dt: number) {
-        
+        if (this.player) {
+            this.player.update(this.cursors);
+        }
     }
 
 
