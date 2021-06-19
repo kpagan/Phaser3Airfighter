@@ -1,19 +1,21 @@
 module.exports = {
-	root: true,
-	parser: '@typescript-eslint/parser',
-	plugins: [
-		'@typescript-eslint'
-	],
-	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/eslint-recommended',
-		'plugin:@typescript-eslint/recommended'
-	],
-	rules: {
-		'@typescript-eslint/explicit-function-return-type': 0,
-		'@typescript-eslint/ban-ts-ignore': 0,
-		'@typescript-eslint/no-namespace': { 'allowDeclarations': true },
-		'@typescript-eslint/member-delimiter-style': 0,
-		'@typescript-eslint/no-explicit-any': 0
-	}
-}
+    root: true,
+    parser: '@typescript-eslint/parser',
+    plugins: [
+        '@typescript-eslint',
+    ],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+    ],
+    rules: {
+        'semi': ['error', 'always'],
+        'no-console': 2,
+        'quotes': ['error', 'single'],
+        'curly': 0,
+        'brace-style': ['error', 'stroustrup'],
+        'indent': ['error', 4],
+        'eol-last': ['error', 'never'],
+        '@typescript-eslint/no-unused-vars': 2
+    }
+};

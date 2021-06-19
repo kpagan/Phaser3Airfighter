@@ -1,136 +1,133 @@
-![phaser3-parceljs-template](https://user-images.githubusercontent.com/2236153/71606463-37a0da80-2b2e-11ea-9b5f-5d26ccc84f91.png)
+**Table of contents**
+- [Dependencies](#dependencies)
+- [Quick start](#quick-start)
+- [Project structure](#project-structure)
+- [TypeScript](#typescript)
+- [Snowpack](#snowpack)
+  - [Build optimization](#build-optimization)
+- [ESLint](#eslint)
+- [NPM Scripts](#npm-scripts)
 
-# Phaser 3 + TypeScript + Parcel Template
-> For people who want to spend time making Phaser 3 games in TypeScript instead of configuring build tools.
+# Dependencies
+- [Node.js](https://nodejs.org/en/)
+- [npm](https://www.npmjs.com/)
 
-![License](https://img.shields.io/badge/license-MIT-green)
+# Quick start
 
-This is a TypeScript specific fork of [phaser3-parcel-template](https://github.com/ourcade/phaser3-parcel-template).
+1. Get this template: Press over the "Use this template" button. This will allow you to create a new repo with this project's structure on your Github account. Then you can clone it to your local machine.
 
-## Prerequisites
+    Alternatively, you can clone this repo to your machine using the following command.
 
-You'll need [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), and [Parcel](https://parceljs.org/) installed.
-
-It is highly recommended to use [Node Version Manager](https://github.com/nvm-sh/nvm) (nvm) to install Node.js and npm.
-
-For Windows users there is [Node Version Manager for Windows](https://github.com/coreybutler/nvm-windows).
-
-Install Node.js and `npm` with `nvm`:
-
-```bash
-nvm install node
-
-nvm use node
+```sh
+git clone https://github.com/pawap90/phaser3-ts-snowpack-eslint.git
 ```
 
-Replace 'node' with 'latest' for `nvm-windows`.
+2. Install dependencies: Run the following command from the project's root folder:
 
-Then install Parcel:
-
-```bash
-npm install -g parcel-bundler
-```
-
-## Getting Started
-
-Clone this repository to your local machine:
-
-```bash
-git clone https://github.com/ourcade/phaser3-typescript-parcel-template.git
-```
-
-This will create a folder named `phaser3-typescript-parcel-template`. You can specify a different folder name like this:
-
-```bash
-git clone https://github.com/ourcade/phaser3-typescript-parcel-template.git my-folder-name
-```
-
-Go into your new project folder and install dependencies:
-
-```bash
-cd phaser3-typescript-parcel-template # or 'my-folder-name'
+```sh
 npm install
 ```
 
-Start development server:
+3. Start the local development server: 
+
+```sh
+npm start
+```
+
+Go to your browser and navigate to http://localhost:8000. You should see this beauty:
+
+![Acho the pup bouncing around](https://i.imgur.com/bYVcrSr.gif)
+
+If you wish to publish your project somewhere, create the production build using the following command:
+
+```sh
+npm run build
+```
+
+# Project structure
 
 ```
-npm run start
+├───public/                         Public static files
+│   ├───assets/                     Sample assets
+│   │   ├───banner.png
+│   │   ├───acho.png
+│   │   └───ground.png
+│   └───index.html                  HTML file where our game will be loaded
+├───src/                            Game logic goes here
+│   ├───scenes/                     Game scenes
+│   │   ├───InitialScene.ts         Initial sample scene
+│   │   └───PreloaderScene.ts       Scene preloader
+│   └───Main.ts                     Phaser game configuration
+├───.eslintignore                   Files that should be ignored by ESLint	
+├───.eslintrc.js                    ESLint configuration file
+├───.gitignore                      Files that should not be pushed to the repo
+├───package.json                    Project scripts, dependencies and metadata
+├───snowpack.config.js              Snowpack configuration file
+└───tsconfig.json                   Typescript configuration file
 ```
 
-To create a production build:
+> You can remove everything in the `public/assets` folder. But I recommend you first run the project once and make sure everything is installed and running properly.
+
+# TypeScript
+You can find TypeScript's configuration in `tsconfig.json`. It has a few rules to keep the codebase type-safe, like "strict" and "noImplicitAny". Feel free to change it as needed.
+
+# Snowpack
+Snowpack takes care of building the project for development and production. The configuration can be found in `snowpack.config.js`.
+
+To build your project for development and enjoy live updates, execute:
+
+```sh
+npm start
+```
+This will start the server in http://localhost:8000. You can change the port in `snowpack.config.js`: `devOptions.port`.
+
+To build your project for production:
 
 ```
 npm run build
 ```
+This command will execute a few tasks:
+1. The `prebuild` script will be executed automatically first:
+   1. It will compile the TypeScript code. If any errors are found, the build will be interrupted and the errors printed.
+   2. It will also execute ESLint in search for problems. This can also interrupt the build if any issues are found (we want our production builds to be safe).
+2. Finally, the `build` script will use Snowpack to generate the production package in the `_build` directory.
 
-Production files will be placed in the `dist` folder. Then upload those files to a web server. 🎉
+## Build optimization
+I included the following optimization options in the `snowpack.config.js` file:
 
-## Project Structure
-
+```js
+{
+    optimize: {
+        bundle: true,
+        minify: true,
+        sourcemap: false
+    }
+}
 ```
-    .
-    ├── dist
-    ├── node_modules
-    ├── public
-    ├── src
-    │   ├── scenes
-    │   │   ├── HelloWorldScene.ts
-    │   ├── index.html
-    │   ├── main.ts
-    ├── package.json
+These will make your production build lighter, which is great because it will load faster on your site once you publish your game. However, Snowpack [warns us on their site](https://www.snowpack.dev/guides/optimize-and-bundle) about these built-in optimizations. TLDR: They are powered by a tool called `esbuild` that is new and not yet production-ready. 
+
+That being said, I've done a few tests, published a few sample games using the optimizations described above, and I haven't encountered any issues yet. If you have any problems with your production build, you can remove the whole `optimize` object from `snowpack.config.js` and see if that solves it.
+
+# ESLint
+ESLint keeps your codebase clean and consistent while also helping you prevent errors. 
+
+This project comes with a few custom rules already set up in the `.eslint.js` file. Feel free to update them in your own project.
+
+Check for errors or styling issues using the following command:
+```sh
+npm run lint
 ```
+This will print the list of problems found. 
 
-The contents of this template is the basic [Phaser 3 getting started example](http://phaser.io/tutorials/getting-started-phaser3/part5).
-
-This template assumes you will want to organize your code into multiple files and use TypeScript.
-
-TypeScript files are intended for the `src` folder. `main.ts` is the entry point referenced by `index.html`.
-
-Other than that there is no opinion on how you should structure your project. There is a `scenes` folder in `src` where the `HelloWorldScene.ts` lives but you can do whatever you want.
-
-## Static Assets
-
-Any static assets like images or audio files should be placed in the `public` folder. It'll then be served at http://localhost:8000/images/my-image.png
-
-Example `public` structure:
-
-```
-    public
-    ├── images
-    │   ├── my-image.png
-    ├── music
-    │   ├── ...
-    ├── sfx
-    │   ├── ...
+Some of the issues can be automatically fixed using:
+```sh
+npm run lint:fix
 ```
 
-They can then be loaded by Phaser with `this.image.load('my-image', 'images/my-image.png')`.
-
-## TypeScript ESLint
-
-This template uses a basic `typescript-eslint` set up for code linting.
-
-It does not aim to be opinionated.
-
-## Dev Server Port
-
-You can change the dev server's port number by modifying the `start` script in `package.json`. We use Parcel's `-p` option to specify the port number.
-
-The script looks like this:
-
-```
-parcel src/index.html -p 8000
-```
-
-Change 8000 to whatever you want.
-
-## Other Notes
-
-[parcel-plugin-clean-easy](https://github.com/lifuzhao100/parcel-plugin-clean-easy) is used to ensure only the latest files are in the `dist` folder. You can modify this behavior by changing `parcelCleanPaths` in `package.json`.
-
-[parcel-plugin-static-files](https://github.com/elwin013/parcel-plugin-static-files-copy#readme) is used to copy static files from `public` into the output directory and serve it. You can add additional paths by modifying `staticFiles` in `package.json`.
-
-## License
-
-[MIT License](https://github.com/ourcade/phaser3-typescript-parcel-template/blob/master/LICENSE)
+# NPM Scripts
+A brief description of the scripts you'll find in the `package.json`:
+- **start**: Starts the local development server. Use it to test your project during development.
+- **prebuild**: Compiles the project and runs the linter. This script will be executed before `build`, and its goal is to find any errors before the production build is created.
+- **build**: Generates the production build in a `_build` folder located in the project's root.
+- **lint**: Runs the linter and prints any issues found
+- **lint:fix**: Runs the linter and executes automatic fixes. It'll also print any issues that couldn't be solved.
