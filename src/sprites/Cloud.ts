@@ -1,43 +1,51 @@
 import Phaser from 'phaser'
+import { eventEmitter } from '../core/EventEmmiter';
+import Events from '../core/Events';
 
 interface CloudConfig {
     velocity: number;
+    mass: number;
+    depth: number;
 }
 
 const CLOUD_CONFIG: { [key: string]: CloudConfig } = {
     'small': {
-        velocity: 300
+        velocity: 3,
+        mass: 10,
+        depth: 100
     },
     'big': {
-        velocity: 100
+        velocity: 2,
+        mass: 20,
+        depth: 0
     },
-    'huge': { 
-        velocity: 50 
+    'huge': {
+        velocity: 1,
+        mass: 30,
+        depth: 0
     }
 };
-export default class Cloud extends Phaser.Physics.Arcade.Sprite {
-
-
-    private speed: number;
+export default class Cloud extends Phaser.Physics.Matter.Image {
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
-        super(scene, x, y, texture, frame);
+        super(scene.matter.world, x, y, texture, frame);
         let type = frame.split('-')[1];
         if (type !== 'huge') {
-            type = type.substring(0, type.length-1); // cut the last digit from the name
+            type = type.substring(0, type.length - 1); // cut the last digit from the name
         }
-        this.speed = CLOUD_CONFIG[type].velocity + 100 * Math.random();
-    }
+        let speed = CLOUD_CONFIG[type].velocity + Math.random();
+        this.setVelocity(-speed, 0);
+        this.setMass(CLOUD_CONFIG[type].mass);
 
-    preUpdate(t: number, dt: number) {
-        super.preUpdate(t, dt);
-        this.setVelocity(-this.speed, 0);
+        this.setCollisionCategory(0);
+        this.setDepth(CLOUD_CONFIG[type].depth);
+        this.setFrictionAir(0);
     }
 
     update(t: number, dt: number) {
         super.update(t, dt);
         if (this.x < -(this.width / 2)) {
-            this.destroy();
+            eventEmitter.emit(Events.DESPAWN_OBJ, this);
         }
     }
 

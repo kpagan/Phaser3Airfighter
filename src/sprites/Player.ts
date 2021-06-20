@@ -6,7 +6,7 @@ const PLAYER_UP = 'player-up';
 const PLAYER_DOWN = 'player-down';
 declare global {
     namespace Phaser.GameObjects {
-        interface GameObjectFactory {
+        export interface GameObjectFactory {
             player(x: number, y: number): Player;
         }
     }
@@ -14,37 +14,55 @@ declare global {
 
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 
-export default class Player extends Phaser.Physics.Arcade.Sprite {
+export default class Player extends Phaser.Physics.Matter.Sprite {
 
-    private speed: number = 100;
+    private speed: number = 0.1;
+    private acceleration: number = 0.01;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, TEXTURE, PLAYER_NORMAL);
+        super(scene.matter.world, x, y, TEXTURE, 'ship-01');
+        this.setMass(200);
         this.createAnimations();
         this.play(PLAYER_NORMAL);
+        this.setDepth(2);
+        this.setFrictionAir(0.05);
     }
 
-    update(cursors: CursorKeys) {
+    update(cursors: CursorKeys, dt: number) {
         if (cursors.left.isDown) {
-            this.setVelocityX(-this.speed);
+            this.thrustBack(this.speed);
         }
         else if (cursors.right.isDown) {
-            this.setVelocityX(this.speed);
+            this.thrust(this.speed);
         } else {
-            this.setVelocityX(0);
+            // decelerate until velocity X is 0
+            // this.setVelocityX(this.calculateNewVelocity(this.body.velocity.x, dt));
         }
 
         if (cursors.up.isDown) {
-            this.setVelocityY(-this.speed);
+            this.thrustLeft(this.speed);
             this.play(PLAYER_UP);
         }
         else if (cursors.down.isDown) {
-            this.setVelocityY(this.speed);
+            this.thrustRight(this.speed);
             this.play(PLAYER_DOWN);
         } else {
-            this.setVelocityY(0);
+            // decelerate until velocity Y is 0
+            // this.setVelocityY(this.calculateNewVelocity(this.body.velocity.y, dt));
             this.play(PLAYER_NORMAL);
         }
+    }
+
+    private calculateNewVelocity(initialVelocity: number, dt: number): number {
+        let accel = this.acceleration;
+        let minVelocity = 0;
+        let maxVelocity = initialVelocity;
+        if (initialVelocity < 0) {
+            accel = -accel;
+            minVelocity = initialVelocity;
+            maxVelocity = 0;
+        }
+        return Phaser.Math.Clamp(initialVelocity - accel * dt, minVelocity, maxVelocity);
     }
 
     private createAnimations() {
@@ -55,7 +73,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 frame: 'ship-01'
             }]
         });
-        
+
         this.anims.create({
             key: PLAYER_UP,
             frames: [{
@@ -78,10 +96,12 @@ Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.G
 
     this.displayList.add(sprite);
     this.updateList.add(sprite);
-    this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
-    sprite.body.setSize(sprite.width * 0.95, sprite.height * 0.8);
+    // sprite.world.add(sprite.body);
+    sprite.setFixedRotation();
+    // this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
+    // sprite.body.setSize(sprite.width * 0.95, sprite.height * 0.8);
     sprite.setOrigin(0.5, 0.5);
     // sprite.setOffset(0.5, 0.1);
-    sprite.setCollideWorldBounds();
+    // sprite.setCollideWorldBounds();
     return sprite;
 })

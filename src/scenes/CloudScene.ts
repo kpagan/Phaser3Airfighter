@@ -1,14 +1,17 @@
+
 import Phaser from 'phaser'
 import '../sprites/Player';
 import Cloud from '../sprites/Cloud'
 import Player from '../sprites/Player';
+import '../core/GameObjectPool';
 
 const KEY = 'clouds';
+const CLOUD_SPAWN = 3;
 
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 
 export default class CloudScene extends Phaser.Scene {
-    private cloudGroup!: Phaser.Physics.Arcade.Group;
+    private cloudGroup!: IPool;
     private cursors!: CursorKeys;
     private player?: Player;
 
@@ -21,7 +24,7 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     create() {
-        this.cloudGroup = this.physics.add.group({
+        this.cloudGroup = this.add.pool({
             classType: Cloud,
             maxSize: 5,
             runChildUpdate: true
@@ -29,22 +32,20 @@ export default class CloudScene extends Phaser.Scene {
 
         this.time.addEvent({
             startAt:0,
-            delay: 5000,
+            delay: 1000,
             loop: true,
             callback: () => this.addCloud()
         });
 
         this.player = this.add.player(0, this.scale.height / 2);
-        this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
-        this.physics.world.setBoundsCollision();
+        this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height);
     }
 
     update(t: number, dt: number) {
         if (this.player) {
-            this.player.update(this.cursors);
+            this.player.update(this.cursors, dt);
         }
     }
-
 
     private addCloud(): void {
          // get metadata aboud the clouds from the clouds.json file
@@ -55,7 +56,8 @@ export default class CloudScene extends Phaser.Scene {
          let x = Number(this.game.config.width) + frame.width;
          let y = Phaser.Math.Between(0, Number(this.game.config.height));
         // Find first inactive sprite in group or add new sprite
-        this.cloudGroup.create(x, y, KEY, frame.name);
+        this.cloudGroup.spawn(x, y, KEY, frame.name);
     }
 
+    
 }
