@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\assets\\ships",
+  "images": [
+    {
+      "name": "ship1.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship1.png",
+      "folder": ""
+    },
+    {
+      "name": "ship2.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship2.png",
+      "folder": ""
+    },
+    {
+      "name": "ship3.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship3.png",
+      "folder": ""
+    },
+    {
+      "name": "ship4.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship4.png",
+      "folder": ""
+    },
+    {
+      "name": "ship5.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship5.png",
+      "folder": ""
+    },
+    {
+      "name": "ship6.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship6.png",
+      "folder": ""
+    },
+    {
+      "name": "ship7.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship7.png",
+      "folder": ""
+    },
+    {
+      "name": "ship8.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship8.png",
+      "folder": ""
+    },
+    {
+      "name": "ship9.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/Ships from Shutterstock/ship9.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "enemies",
+    "textureFormat": "png",
+    "removeFileExtension": true,
+    "prependFolderName": false,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\assets\\ships",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": false,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "MaxRectsPacker",
+    "packerMethod": "Smart"
+  }
+}

@@ -29,10 +29,7 @@ export default class Cloud extends Phaser.Physics.Matter.Image {
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
         super(scene.matter.world, x, y, texture, frame);
-        let type = frame.split('-')[1];
-        if (type !== 'huge') {
-            type = type.substring(0, type.length - 1); // cut the last digit from the name
-        }
+        let type = Cloud.getType(frame);
         let speed = CLOUD_CONFIG[type].velocity + Math.random();
         this.setVelocity(-speed, 0);
         this.setMass(CLOUD_CONFIG[type].mass);
@@ -40,6 +37,14 @@ export default class Cloud extends Phaser.Physics.Matter.Image {
         this.setCollisionCategory(0);
         this.setDepth(CLOUD_CONFIG[type].depth);
         this.setFrictionAir(0);
+    }
+
+    static getType(frame: string): string {
+        let type = frame.split('-')[1];
+        if (type !== 'huge') {
+            type = type.substring(0, type.length - 1); // cut the last digit from the name
+        }
+        return type;
     }
 
     update(t: number, dt: number) {

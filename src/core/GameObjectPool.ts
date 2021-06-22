@@ -14,6 +14,10 @@ export default class GameObjectPool extends Phaser.GameObjects.Group implements 
     constructor(scene: Phaser.Scene, config: Phaser.Types.GameObjects.Group.GroupConfig = {}) {
         super(scene, config);
         eventEmitter.on(Events.DESPAWN_OBJ, (obj) => this.despawn(obj), this);
+
+        eventEmitter.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+            eventEmitter.off(Events.DESPAWN_OBJ, (obj) => this.despawn(obj), this);
+        });
     }
 
     spawn(x = 0, y = 0, key: string, frame: string) {
@@ -28,6 +32,7 @@ export default class GameObjectPool extends Phaser.GameObjects.Group implements 
         if (spawnExisting) {
             obj.setActive(true);
             obj.setVisible(true);
+            obj.setFrame(frame);
             obj.world.add(obj.body);
         }
         return obj;
