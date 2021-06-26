@@ -5,8 +5,8 @@ import Cloud from '../sprites/Cloud'
 import Player from '../sprites/Player';
 import '../core/GameObjectPool';
 import EnemyController from '../sprites/EnemyController';
+import GlobalConstants from '../core/GlobalConstants';
 
-const KEY = 'clouds';
 const CLOUD_SPAWN = 3;
 
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
@@ -41,21 +41,22 @@ export default class CloudScene extends Phaser.Scene {
 
         this.player = this.add.player(0, this.scale.height / 2);
         this.enemies = new EnemyController(this);
-        // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height);
+        this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
     }
 
     update(t: number, dt: number) {
         if (this.player) {
-            this.player.update(this.cursors, dt);
+            this.player.update(this.cursors, t, dt);
         }
         if (this.enemies) {
             this.enemies.update(t, dt);
         }
+        console.log(this.game.loop.actualFps);
     }
 
     private addCloud(): void {
         // get metadata aboud the clouds from the clouds.json file
-        let cloudMetadata: Phaser.Textures.Texture = this.textures.get(KEY);
+        let cloudMetadata: Phaser.Textures.Texture = this.textures.get(GlobalConstants.CLOUDS_TEXTURE);
         // from the clouds.json there is only 1 texture element so the index should be 0
         let frames: Phaser.Textures.Frame[] = cloudMetadata.getFramesFromTextureSource(0);
         let frame: Phaser.Textures.Frame = frames[Phaser.Math.Between(0, frames.length - 1)];
@@ -87,7 +88,7 @@ export default class CloudScene extends Phaser.Scene {
 
         // Find first inactive sprite in group or add new sprite
         // this.cloudGroup.spawn(x, y, KEY, frame.name);
-        this.add.existing(new Cloud(this, x, y, KEY, frame.name));
+        this.add.existing(new Cloud(this, x, y, GlobalConstants.CLOUDS_TEXTURE, frame.name));
     }
 
 

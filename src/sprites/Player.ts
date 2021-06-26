@@ -1,9 +1,11 @@
 import Phaser from 'phaser'
+import GameObjectPool from '../core/GameObjectPool';
+import GlobalConstants from '../core/GlobalConstants';
 
-const TEXTURE: string = 'player';
 const PLAYER_NORMAL: string = 'player-normal';
 const PLAYER_UP = 'player-up';
 const PLAYER_DOWN = 'player-down';
+
 declare global {
     namespace Phaser.GameObjects {
         export interface GameObjectFactory {
@@ -18,17 +20,31 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     private speed: number = 0.1;
     private acceleration: number = 0.01;
+    private bullets: IPool;
+    private lastFired: number = 0;
+    private fireDelay: number = 5;
+
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene.matter.world, x, y, TEXTURE, 'ship-01');
+        super(scene.matter.world, x, y, GlobalConstants.PLAYER_TEXTURE, 'ship-01');
         this.setMass(200);
         this.createAnimations();
         this.play(PLAYER_NORMAL);
         this.setDepth(2);
         this.setFrictionAir(0.05);
+        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
+        this.bullets = this.scene.add.pool({
+            classType: PlayerBullet,
+            runChildUpdate: true,
+            maxSize: 5,
+            createCallback: (item: Phaser.GameObjects.GameObject) => {
+                let bullet = item as PlayerBullet;
+                bullet.init();
+            }
+        });
     }
 
-    update(cursors: CursorKeys, dt: number) {
+    update(cursors: CursorKeys, t: number, dt: number) {
         if (cursors.left.isDown) {
             this.thrustBack(this.speed);
         }
@@ -50,6 +66,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             // decelerate until velocity Y is 0
             // this.setVelocityY(this.calculateNewVelocity(this.body.velocity.y, dt));
             this.play(PLAYER_NORMAL);
+        }
+
+        if (cursors.space.isDown && t > this.lastFired) {
+            this.bullets.spawn(this.x, this.y);
+            this.lastFired = t + this.fireDelay;
         }
     }
 
@@ -88,6 +109,34 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
                 frame: 'ship-04'
             }]
         });
+    }
+
+}
+
+class PlayerBullet extends Phaser.Physics.Matter.Sprite {
+
+    private speed = 1;
+
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene.matter.world, x, y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FRAME);
+    }
+
+    init() {
+        this.setMass(1);
+        this.setFixedRotation();
+        this.setAngle(90);
+        this.setScale(0.1);
+        this.setVelocityY(0);
+        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET);
+        this.setCollidesWith(GlobalConstants.COLLISION_CATEGORY_ENEMY);
+    }
+
+    update(t: number, dt: number) {
+        this.x += this.speed * dt;
+        if (this.x > this.world.scene.game.config.width) {
+            this.setActive(false);
+            this.setVisible(false);
+        }
     }
 }
 

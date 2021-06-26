@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import GlobalConstants from '../core/GlobalConstants';
 import { eventEmitter } from '../core/EventEmmiter';
 import Events from '../core/Events';
 
@@ -34,7 +35,7 @@ export default class Cloud extends Phaser.Physics.Matter.Image {
         this.setVelocity(-speed, 0);
         this.setMass(CLOUD_CONFIG[type].mass);
 
-        this.setCollisionCategory(0);
+        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_NONE);
         this.setDepth(CLOUD_CONFIG[type].depth);
         this.setFrictionAir(0);
     }
