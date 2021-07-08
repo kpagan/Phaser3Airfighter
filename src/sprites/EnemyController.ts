@@ -8,8 +8,6 @@ export default class EnemyController {
     private scene: Phaser.Scene;
     private pool: Phaser.GameObjects.Group;
     private spriteGenerator: RandomSpriteGenerator<Enemy>;
-    private collisionGroup: number;
-    private collisionCategory: number;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -19,9 +17,6 @@ export default class EnemyController {
             runChildUpdate: true
         });
         
-        this.collisionGroup = this.scene.matter.world.nextGroup(true);
-        this.collisionCategory = this.scene.matter.world.nextCategory();
-
         this.spriteGenerator = new RandomSpriteGenerator<Enemy>(this.scene, Enemy);
 
         this.scene.time.addEvent({
@@ -38,10 +33,9 @@ export default class EnemyController {
     private addEnemy() {
         let enemy = this.spriteGenerator.getRandomSprite(GlobalConstants.ENEMIES_TEXTURE, /Ship\d\/Ship\d/);
         this.pool.add(enemy);
+        enemy.onDestroy((sprite) => this.pool.remove(sprite, true, true));
         
     }
 
-    public getCollisionCategory() {
-        return this.collisionCategory;
-    }
 }
+

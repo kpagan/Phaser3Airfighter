@@ -41,7 +41,7 @@ export default class CloudScene extends Phaser.Scene {
 
         this.player = this.add.player(0, this.scale.height / 2);
         this.enemies = new EnemyController(this);
-        this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
+        // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
     }
 
     update(t: number, dt: number) {
@@ -51,7 +51,7 @@ export default class CloudScene extends Phaser.Scene {
         if (this.enemies) {
             this.enemies.update(t, dt);
         }
-        console.log(this.game.loop.actualFps);
+        // console.log(this.game.loop.actualFps);
     }
 
     private addCloud(): void {

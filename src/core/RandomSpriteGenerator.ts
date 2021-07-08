@@ -13,7 +13,8 @@ export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> 
     /**
      * 
      * @param texture the texture key as it is defined in the atlas loading function
-     * @param filter an optional regular expression to filter the frames in case the atlas contains elements that should not be generated as sprites
+     * @param filter an optional regular expression to include only the frames that match the filter
+     *               in case the atlas contains elements that should not be generated as sprites
      *               e.g. if the atlas contains both the initial sprite along with animations, explosions, bullets etc
      * @returns A sprite of type <T> as it is declared in the constructor of this generator
      */

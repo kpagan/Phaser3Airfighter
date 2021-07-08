@@ -1,7 +1,7 @@
 {
-	"name": "phaser3-parcel-template",
+	"name": "AirFighter",
 	"version": "1.0.0",
-	"description": "A typescript template project for Phaser 3 using Parceljs",
+	"description": "A game with spaceships",
 	"scripts": {
 		"start": "snowpack dev",
 		"prebuild": "tsc && npm run lint",

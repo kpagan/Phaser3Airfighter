@@ -1,6 +1,6 @@
 declare interface IPool extends Phaser.GameObjects.Group {
     spawn(x?: number, y?: number, key?: string, frame?: string);
-    despawn(crate: Phaser.Physics.Matter.Image);
+    despawn(obj: Phaser.Physics.Matter.Image);
     initializeWithSize(size: number, texture: string);
 }
 

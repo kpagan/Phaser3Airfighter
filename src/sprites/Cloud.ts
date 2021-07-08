@@ -30,6 +30,7 @@ export default class Cloud extends Phaser.Physics.Matter.Image {
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
         super(scene.matter.world, x, y, texture, frame);
+        this.setName('Cloud_' + frame);
         let type = Cloud.getType(frame);
         let speed = CLOUD_CONFIG[type].velocity + Math.random();
         this.setVelocity(-speed, 0);
