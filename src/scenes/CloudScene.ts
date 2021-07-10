@@ -40,7 +40,7 @@ export default class CloudScene extends Phaser.Scene {
         });
 
         this.player = this.add.player(0, this.scale.height / 2);
-        this.enemies = new EnemyController(this);
+        this.enemies = new EnemyController(this, this.player);
         // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
     }
 

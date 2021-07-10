@@ -77,8 +77,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             this.lastFired = t + this.fireDelay;
         }
 
-        console.log('Used: ' + this.bullets.getTotalUsed());
-        console.log('Free: ' + this.bullets.getTotalFree());
+        // console.log('Used: ' + this.bullets.getTotalUsed());
+        // console.log('Free: ' + this.bullets.getTotalFree());
     
     }
 

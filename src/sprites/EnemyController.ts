@@ -8,9 +8,11 @@ export default class EnemyController {
     private scene: Phaser.Scene;
     private pool: Phaser.GameObjects.Group;
     private spriteGenerator: RandomSpriteGenerator<Enemy>;
+    private target: Phaser.GameObjects.Components.Transform
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, target: Phaser.GameObjects.Components.Transform) {
         this.scene = scene;
+        this.target = target;
         this.pool = this.scene.add.group({
             classType: Enemy,
             maxSize: 5,
@@ -32,8 +34,9 @@ export default class EnemyController {
 
     private addEnemy() {
         let enemy = this.spriteGenerator.getRandomSprite(GlobalConstants.ENEMIES_TEXTURE, /Ship\d\/Ship\d/);
-        this.pool.add(enemy);
         enemy.onDestroy((sprite) => this.pool.remove(sprite, true, true));
+        enemy.setTarget(this.target);
+        this.pool.add(enemy);
         
     }
 
