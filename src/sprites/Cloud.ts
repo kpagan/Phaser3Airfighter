@@ -26,19 +26,21 @@ const CLOUD_CONFIG: { [key: string]: CloudConfig } = {
         depth: 0
     }
 };
-export default class Cloud extends Phaser.Physics.Matter.Image {
+export default class Cloud extends Phaser.Physics.Arcade.Image {
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
-        super(scene.matter.world, x, y, texture, frame);
+        super(scene, x, y, texture, frame);
         this.setName('Cloud_' + frame);
         let type = Cloud.getType(frame);
         let speed = CLOUD_CONFIG[type].velocity + Math.random();
-        this.setVelocity(-speed, 0);
-        this.setMass(CLOUD_CONFIG[type].mass);
+        // TODO set velocity but not in constructor
+        //this.setVelocity(-speed, 0);
+        // this.setMass(CLOUD_CONFIG[type].mass);
 
-        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_NONE);
+        // TODO set collision
+        // this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_NONE);
         this.setDepth(CLOUD_CONFIG[type].depth);
-        this.setFrictionAir(0);
+        // this.setFrictionAir(0);
     }
 
     static getType(frame: string): string {
@@ -52,7 +54,7 @@ export default class Cloud extends Phaser.Physics.Matter.Image {
     update(t: number, dt: number) {
         super.update(t, dt);
         if (this.x < -(this.width / 2)) {
-            eventEmitter.emit(Events.DESPAWN_OBJ, this);
+            this.destroy();
         }
     }
 

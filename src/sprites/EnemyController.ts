@@ -37,8 +37,10 @@ export default class EnemyController {
         enemy.onDestroy((sprite) => this.pool.remove(sprite, true, true));
         enemy.setTarget(this.target);
         this.pool.add(enemy);
-        
     }
 
+    public getPool() {
+        return this.pool;
+    }
 }
 

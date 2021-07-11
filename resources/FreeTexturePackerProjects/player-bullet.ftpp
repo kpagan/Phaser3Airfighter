@@ -39,7 +39,7 @@
     "allowTrim": true,
     "trimMode": "trim",
     "alphaThreshold": "0",
-    "detectIdentical": true,
+    "detectIdentical": false,
     "packer": "MaxRectsPacker",
     "packerMethod": "Smart"
   }

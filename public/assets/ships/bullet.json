@@ -4,8 +4,8 @@
 			"image": "bullet",
 			"format": "RGBA8888",
 			"size": {
-				"w": 258,
-				"h": 376
+				"w": 75,
+				"h": 51
 			},
 			"scale": 1,
 			"frames": [
@@ -14,20 +14,20 @@
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 172,
-						"h": 376
+						"w": 75,
+						"h": 34
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 172,
-						"h": 376
+						"w": 75,
+						"h": 34
 					},
 					"frame": {
 						"x": 0,
 						"y": 0,
-						"w": 172,
-						"h": 376
+						"w": 75,
+						"h": 34
 					}
 				},
 				{
@@ -35,20 +35,20 @@
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
-						"w": 86,
-						"h": 371
+						"w": 74,
+						"h": 17
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
-						"w": 86,
-						"h": 371
+						"w": 74,
+						"h": 17
 					},
 					"frame": {
-						"x": 172,
-						"y": 0,
-						"w": 86,
-						"h": 371
+						"x": 0,
+						"y": 34,
+						"w": 74,
+						"h": 17
 					}
 				}
 			]

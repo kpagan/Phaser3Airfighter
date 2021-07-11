@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 import '../sprites/Player';
 import Cloud from '../sprites/Cloud'
 import Player from '../sprites/Player';
-import '../core/GameObjectPool';
 import EnemyController from '../sprites/EnemyController';
 import GlobalConstants from '../core/GlobalConstants';
 
@@ -12,7 +11,7 @@ const CLOUD_SPAWN = 3;
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 
 export default class CloudScene extends Phaser.Scene {
-    private cloudGroup!: IPool;
+    private cloudGroup!: Phaser.GameObjects.Group;
     private cursors!: CursorKeys;
     private player?: Player;
     private enemies!: EnemyController;
@@ -26,7 +25,7 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     create() {
-        this.cloudGroup = this.add.pool({
+        this.cloudGroup = this.add.group({
             classType: Cloud,
             maxSize: 5,
             runChildUpdate: true
@@ -40,8 +39,12 @@ export default class CloudScene extends Phaser.Scene {
         });
 
         this.player = this.add.player(0, this.scale.height / 2);
+        // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
         // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
+        // this.physics.add.collider(this.player, this.enemies.getPool(), this.handlePlayerEnemyCollision ) setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
+        this.physics.world.wrap
+
     }
 
     update(t: number, dt: number) {
@@ -87,8 +90,8 @@ export default class CloudScene extends Phaser.Scene {
         let x = Number(this.game.config.width) + frame.width;
 
         // Find first inactive sprite in group or add new sprite
-        // this.cloudGroup.spawn(x, y, KEY, frame.name);
-        this.add.existing(new Cloud(this, x, y, GlobalConstants.CLOUDS_TEXTURE, frame.name));
+        this.cloudGroup.get(x, y, GlobalConstants.CLOUDS_TEXTURE, frame.name);
+        // this.add.existing(new Cloud(this, x, y, GlobalConstants.CLOUDS_TEXTURE, frame.name));
     }
 
 

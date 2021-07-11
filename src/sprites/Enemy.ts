@@ -11,7 +11,7 @@ const EnemyStates = {
     DEAD: 'DEAD',
     FIRING: 'FIRING'
 }
-export default class Enemy extends Phaser.Physics.Matter.Sprite {
+export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     private randomX: number;
     private randomAmplitude: number;
@@ -26,20 +26,18 @@ export default class Enemy extends Phaser.Physics.Matter.Sprite {
     private stateMacine: StateMachine;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
-        super(scene.matter.world, x, y, texture, frame);
-        let b = this.body as MatterJS.BodyType
-        this.setName('Enemy-' + b.id);
-        this.setMass(250);
+        super(scene, x, y, texture, frame);
+        this.setName('Enemy');
         this.setScale(0.5);
         this.setFlipX(true);
-        this.setFixedRotation();
         scene.add.existing(this);
         this.randomX = Math.random();
         this.randomAmplitude = Math.random();
         this.randomFrequency = Math.random();
-        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_ENEMY);
-        this.setCollidesWith([GlobalConstants.COLLISION_CATEGORY_PLAYER, GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET]);
-        this.setOnCollide(this.handleCollision);
+        // TODO set collision
+        // this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_ENEMY);
+        // this.setCollidesWith([GlobalConstants.COLLISION_CATEGORY_PLAYER, GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET]);
+        // this.setOnCollide(this.handleCollision);
 
         this.stateMacine = new StateMachine(this, 'Enemy');
 
