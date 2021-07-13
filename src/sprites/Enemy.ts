@@ -84,14 +84,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     // }
 
     update(t: number, dt: number) {
-        this.stateMacine.update(dt);
+        this.stateMacine.update(t, dt);
     }
 
     private patrollingOnEnter() {
         this.waypoint = this.findWaypoint();
     }
 
-    private patrollingOnUpdate(dt: number) {
+    private patrollingOnUpdate(t:number, dt: number) {
         let distance = Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y);
         if (distance < 100) {
             this.stateMacine.setState(EnemyStates.EVADING);
@@ -121,7 +121,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     }
 
-    private evadingOnUpdate(dt: number) {
+    private evadingOnUpdate(t: number, dt: number) {
         let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
         let distance = Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y);
         let xo = -Math.cos(angle) * this.speed * dt;

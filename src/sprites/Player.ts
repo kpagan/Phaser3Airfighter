@@ -2,20 +2,22 @@ import Phaser from 'phaser'
 import CallbackOnSprite from '../core/CallbackOnSprite';
 import GlobalConstants from '../core/GlobalConstants';
 
-const PLAYER_NORMAL: string = 'player-normal';
-const PLAYER_UP = 'player-up';
-const PLAYER_DOWN = 'player-down';
-const PLAYER_FIRING = 'player-firing';
+type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
+
+const PlayerAnims = {
+    NORMAL: 'player-normal',
+    UP: 'player-up',
+    DOWN: 'player-down'
+}
 
 declare global {
     namespace Phaser.GameObjects {
         export interface GameObjectFactory {
-            player(x: number, y: number): Player;
+            player(x: number, y: number, cursors: CursorKeys): Player;
         }
     }
 }
 
-type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
 
@@ -25,13 +27,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     private lastFired: number = 0;
     private fireDelay: number = 500;
     private fireFlash: Phaser.GameObjects.Image;
+    private cursors: CursorKeys;
 
-
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, cursors: CursorKeys) {
         super(scene, x, y, GlobalConstants.PLAYER_TEXTURE, 'ship-01');
+        this.cursors = cursors;
         this.setName('Player');
         this.createAnimations();
-        this.play(PLAYER_NORMAL);
+        this.setAnim(PlayerAnims.NORMAL);
         this.setDepth(2);
         this.bullets = this.scene.add.group({
             classType: PlayerBullet,
@@ -42,47 +45,52 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.fireFlash.setAlpha(0).setDepth(3).setOrigin(0.2, 0.5).setBlendMode(Phaser.BlendModes.ADD);
     }
 
-    update(cursors: CursorKeys, t: number, dt: number) {
-        if (cursors.left.isDown) {
+    update(t: number, dt: number) {
+
+        if (this.cursors.left.isDown) {
             this.setVelocityX(this.accelerate(this.body.velocity.x, dt, false));
         }
-        else if (cursors.right.isDown) {
+        else if (this.cursors.right.isDown) {
             this.setVelocityX(this.accelerate(this.body.velocity.x, dt, true));
         } else {
             // decelerate until velocity X is 0
             this.setVelocityX(this.decelerate(this.body.velocity.x, dt));
         }
 
-        if (cursors.up.isDown) {
+        if (this.cursors.up.isDown) {
             this.setVelocityY(this.accelerate(this.body.velocity.y, dt, false));
-            this.play(PLAYER_UP);
+            this.setAnim(PlayerAnims.UP);
         }
-        else if (cursors.down.isDown) {
+        else if (this.cursors.down.isDown) {
             this.setVelocityY(this.accelerate(this.body.velocity.y, dt, true));
-            this.play(PLAYER_DOWN);
+            this.setAnim(PlayerAnims.DOWN);
         } else {
             // decelerate until velocity Y is 0
             this.setVelocityY(this.decelerate(this.body.velocity.y, dt));
-            this.play(PLAYER_NORMAL);
+            this.setAnim(PlayerAnims.NORMAL);
         }
 
-        if (cursors.space.isDown && t > this.lastFired) {
-            let bullet = this.bullets.get(this.x, this.y) as PlayerBullet;
+        
+
+        // console.log('Used: ' + this.bullets.getTotalUsed());
+        // console.log('Free: ' + this.bullets.getTotalFree());
+    }
+
+    preUpdate(t:number, dt: number) {        
+        super.preUpdate(t, dt);
+        let { x, y } = this.getRightCenter();
+        this.fireFlash.setPosition(x, y);
+        if (this.cursors.space.isDown && t > this.lastFired) {
+            let bullet = this.bullets.get(x, y) as PlayerBullet;
             if (bullet) {
                 this.displayFireFlash();
                 bullet.onDestroy((sprite) => this.bullets.remove(sprite, true, true));
                 this.lastFired = t + this.fireDelay;
             }
         }
-
-        console.log('Used: ' + this.bullets.getTotalUsed());
-        console.log('Free: ' + this.bullets.getTotalFree());
-
     }
 
     private displayFireFlash() {
-        let { x, y } = this.getRightCenter();
-        this.fireFlash.setPosition(x, y);
         this.scene.tweens.add({
             targets: this.fireFlash,
             alpha: { value: 1, duration: 100, ease: Phaser.Math.Easing.Sine.InOut },
@@ -118,9 +126,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         return Phaser.Math.Clamp(initialVelocity + accel * dt, minVelocity, maxVelocity);
     }
 
+    private setAnim(anim: string) {
+        this.play(anim);
+    }
+
     private createAnimations() {
         this.anims.create({
-            key: PLAYER_NORMAL,
+            key: PlayerAnims.NORMAL,
             frames: [{
                 key: GlobalConstants.PLAYER_TEXTURE,
                 frame: 'ship-01'
@@ -128,14 +140,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.anims.create({
-            key: PLAYER_UP,
+            key: PlayerAnims.UP,
             frames: [{
                 key: GlobalConstants.PLAYER_TEXTURE,
                 frame: 'ship-05'
             }]
         });
         this.anims.create({
-            key: PLAYER_DOWN,
+            key: PlayerAnims.DOWN,
             frames: [{
                 key: GlobalConstants.PLAYER_TEXTURE,
                 frame: 'ship-04'
@@ -187,8 +199,8 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
 
 }
 
-Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number) {
-    let sprite = new Player(this.scene, x, y);
+Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, cursors: CursorKeys) {
+    let sprite = new Player(this.scene, x, y, cursors);
 
     this.displayList.add(sprite);
     this.updateList.add(sprite);

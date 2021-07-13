@@ -38,7 +38,7 @@ export default class CloudScene extends Phaser.Scene {
             callback: () => this.addCloud()
         });
 
-        this.player = this.add.player(0, this.scale.height / 2);
+        this.player = this.add.player(0, this.scale.height / 2, this.cursors);
         // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
         // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
@@ -49,7 +49,7 @@ export default class CloudScene extends Phaser.Scene {
 
     update(t: number, dt: number) {
         if (this.player) {
-            this.player.update(this.cursors, t, dt);
+            this.player.update(t, dt);
         }
         if (this.enemies) {
             this.enemies.update(t, dt);

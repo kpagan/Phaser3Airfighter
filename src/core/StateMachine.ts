@@ -1,6 +1,6 @@
 interface StateConfig {
     onEnter?: () => void;
-    onUpdate?: (dt: number) => void;
+    onUpdate?: (t: number, dt: number) => void;
     onExit?: () => void;
 }
 
@@ -88,14 +88,14 @@ export default class StateMachine {
         this.isChangingState = false;
     }
 
-    update(dt: number) {
+    update(t: number, dt: number) {
         if (this.changeStateQueue.length > 0) {
             this.setState(this.changeStateQueue.shift()!);
             return;
         }
 
         if (this.currentState && this.currentState.onUpdate) {
-            this.currentState.onUpdate(dt);
+            this.currentState.onUpdate(t, dt);
         }
     }
 }
