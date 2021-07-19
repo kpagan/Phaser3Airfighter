@@ -36,12 +36,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.createAnimations();
         this.setAnim(PlayerAnims.NORMAL);
         this.setDepth(2);
-        this.bullets = this.scene.add.group({
+        this.bullets = this.scene.physics.add.group({
             classType: PlayerBullet,
             runChildUpdate: true,
-            maxSize: 10,
         });
-        this.fireFlash = this.scene.add.image(this.x, this.y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FLASH_FRAME);
+        this.bullets.createMultiple({
+            key: GlobalConstants.PLAYER_BULLET_TEXTURE,
+            frame: GlobalConstants.PLAYER_BULLET_FRAME,
+            quantity: 5,
+            active: false,
+            visible: false
+        });
+        this.fireFlash = scene.add.image(this.x, this.y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FLASH_FRAME);
         this.fireFlash.setAlpha(0).setDepth(3).setOrigin(0.2, 0.5).setBlendMode(Phaser.BlendModes.ADD);
     }
 
@@ -70,21 +76,27 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.setAnim(PlayerAnims.NORMAL);
         }
 
-        
+
 
         // console.log('Used: ' + this.bullets.getTotalUsed());
         // console.log('Free: ' + this.bullets.getTotalFree());
+        // console.log('Pool Info: {}', this.poolInfo(this.bullets));
+    }
+    
+    poolInfo(group: Phaser.GameObjects.Group) {
+        return `${group.name} ${group.getLength()} (${group.countActive(true)}:${group.countActive(false)})`;
     }
 
-    preUpdate(t:number, dt: number) {        
+    preUpdate(t: number, dt: number) {
         super.preUpdate(t, dt);
         let { x, y } = this.getRightCenter();
         this.fireFlash.setPosition(x, y);
         if (this.cursors.space.isDown && t > this.lastFired) {
-            let bullet = this.bullets.get(x, y) as PlayerBullet;
+            let bullet = this.bullets.getFirstDead();
             if (bullet) {
                 this.displayFireFlash();
-                bullet.onDestroy((sprite) => this.bullets.remove(sprite, true, true));
+                bullet.enableBody(true, x, y, true, true);
+                //bullet.onDestroy((sprite) => this.bullets.remove(sprite, true, true)); // TODO revisit pools logic. no need to destroy things. just recycle
                 this.lastFired = t + this.fireDelay;
             }
         }
@@ -155,9 +167,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    public getBullets() {
+        return this.bullets;
+    }
+
 }
 
-class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
+export class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
 
     private speed = 1;
 
@@ -169,33 +185,38 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     init() {
-        this.speed = Phaser.Math.GetSpeed(400, 1);
         this.setName('PlayerBullet');
+        this.scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
+        this.speed = Phaser.Math.GetSpeed(400, 1);
+        this.setVelocityX(this.speed);
         // TODO set collision
         // this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET);
         // this.setCollidesWith(GlobalConstants.COLLISION_CATEGORY_ENEMY);
         // this.setOnCollide(this.handleCollision);
     }
 
-    handleCollision = (data: MatterJS.ICollisionPair) => {
-        if (this.destroyCallback) {
-            this.destroyCallback(this);
-        }
-    }
+    // TODO remove MatterJS collision handler
+    // handleCollision = (data: MatterJS.ICollisionPair) => {
+    //     if (this.destroyCallback) {
+    //         this.destroyCallback(this);
+    //     }
+    // }
 
     update(t: number, dt: number) {
         this.x += this.speed * dt;
         // TODO destroy sprite after getting off-screen
         if (this.x > this.scene.game.config.width) {
-            this.setActive(false);
-            this.setVisible(false);
-            this.destroyCallback(this);
+            this.disableBody(true, true);
+            // TODO revisit pools logic. no need to destroy things. just recycle
+            // this.destroyCallback(this);
         }
     }
 
-    onDestroy(callback: CallbackOnSprite) {
-        this.destroyCallback = callback;
-    }
+    // TODO revisit pools logic. no need to destroy things. just recycle
+    // onDestroy(callback: CallbackOnSprite) {
+    //     this.destroyCallback = callback;
+    // }
+
 
 }
 

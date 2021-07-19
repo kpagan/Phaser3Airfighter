@@ -28,6 +28,8 @@ export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> 
         let frame: Phaser.Textures.Frame = frames[Phaser.Math.Between(0, frames.length - 1)];
         let y = Phaser.Math.Between(0, Number(this.scene.game.config.height));
         let x = Number(this.scene.game.config.width) + frame.width;
-        return new this.spriteType(this.scene, x, y, texture, frame.name);
+        let T =  new this.spriteType(this.scene, x, y, texture, frame.name);
+        this.scene.physics.world.enableBody(T, Phaser.Physics.Arcade.DYNAMIC_BODY);
+        return T;
     }
 }

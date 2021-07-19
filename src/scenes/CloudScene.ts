@@ -42,11 +42,11 @@ export default class CloudScene extends Phaser.Scene {
         // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
         // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
-        // this.physics.add.collider(this.player, this.enemies.getPool(), this.handlePlayerEnemyCollision ) setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
-        this.physics.world.wrap
+        this.physics.add.collider(this.player, this.enemies.getPool(), this.enemies.handlePlayerEnemyCollision, undefined, this);
+        this.physics.add.collider(this.player.getBullets(), this.enemies.getPool(), this.enemies.handlePlayerBulletEnemyCollision, undefined, this);
 
     }
-
+  
     update(t: number, dt: number) {
         if (this.player) {
             this.player.update(t, dt);
