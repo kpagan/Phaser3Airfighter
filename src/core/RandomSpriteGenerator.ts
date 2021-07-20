@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GlobalConstants from './GlobalConstants';
 
 export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> {
 
@@ -28,8 +29,39 @@ export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> 
         let frame: Phaser.Textures.Frame = frames[Phaser.Math.Between(0, frames.length - 1)];
         let y = Phaser.Math.Between(0, Number(this.scene.game.config.height));
         let x = Number(this.scene.game.config.width) + frame.width;
-        let T =  new this.spriteType(this.scene, x, y, texture, frame.name);
+        let T = new this.spriteType(this.scene, x, y, texture, frame.name);
         this.scene.physics.world.enableBody(T, Phaser.Physics.Arcade.DYNAMIC_BODY);
         return T;
+    }
+
+    getMultiplePool(texture: string, filter?: RegExp, groupConfig?: Phaser.Types.Physics.Arcade.PhysicsGroupConfig): Phaser.Physics.Arcade.Group {
+        let metadata: Phaser.Textures.Texture = this.scene.textures.get(texture);
+        let frames: Phaser.Textures.Frame[] = metadata.getFramesFromTextureSource(0);
+        let frameNames: string[] = [];
+        if (filter) {
+            frameNames = frames.filter((frame) => (frame.name.match(filter))).map(frame => frame.name);
+        }
+
+        let defaultConfig: Phaser.Types.Physics.Arcade.PhysicsGroupConfig = {};
+
+
+        defaultConfig = {
+            classType: this.spriteType,
+            runChildUpdate: true
+        }
+
+        let pool = this.scene.physics.add.group({
+            ...defaultConfig,
+            ...groupConfig,
+        });
+
+        pool.createMultiple({
+            key: texture,
+            ...(frameNames.length !== 0 && { frame: frameNames }),
+            active: false,
+            visible: false,
+        });
+
+        return pool;
     }
 }
