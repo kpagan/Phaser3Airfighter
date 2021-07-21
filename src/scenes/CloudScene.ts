@@ -5,6 +5,7 @@ import Cloud from '../sprites/Cloud'
 import Player from '../sprites/Player';
 import EnemyController from '../sprites/EnemyController';
 import GlobalConstants from '../core/GlobalConstants';
+import RandomSpriteGenerator from '../core/RandomSpriteGenerator';
 
 const CLOUD_SPAWN = 3;
 
@@ -15,6 +16,7 @@ export default class CloudScene extends Phaser.Scene {
     private cursors!: CursorKeys;
     private player?: Player;
     private enemies!: EnemyController;
+    private randomSpriteGenerator!: RandomSpriteGenerator<Cloud>;
 
     constructor() {
         super('cloud-scene')
@@ -25,12 +27,10 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     create() {
-        this.cloudGroup = this.add.group({
-            classType: Cloud,
-            maxSize: 5,
-            runChildUpdate: true
+        this.randomSpriteGenerator = new RandomSpriteGenerator<Cloud>(this, Cloud);
+        this.cloudGroup = this.randomSpriteGenerator.getMultiplePool(GlobalConstants.CLOUDS_TEXTURE, undefined, {
+            maxSize: 5
         });
-
         this.time.addEvent({
             startAt: 0,
             delay: 3000,
@@ -41,7 +41,6 @@ export default class CloudScene extends Phaser.Scene {
         this.player = this.add.player(0, this.scale.height / 2, this.cursors);
         // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
-        // this.matter.world.setBounds(0, 0, this.scale.width, this.scale.height, 64, false, false);
         this.physics.add.collider(this.player, this.enemies.getPool(), this.enemies.handlePlayerEnemyCollision, undefined, this);
         this.physics.add.collider(this.player.getBullets(), this.enemies.getPool(), this.enemies.handlePlayerBulletEnemyCollision, undefined, this);
 
@@ -58,40 +57,36 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     private addCloud(): void {
-        // get metadata aboud the clouds from the clouds.json file
-        let cloudMetadata: Phaser.Textures.Texture = this.textures.get(GlobalConstants.CLOUDS_TEXTURE);
-        // from the clouds.json there is only 1 texture element so the index should be 0
-        let frames: Phaser.Textures.Frame[] = cloudMetadata.getFramesFromTextureSource(0);
-        let frame: Phaser.Textures.Frame = frames[Phaser.Math.Between(0, frames.length - 1)];
-        let y, lower, upper: number;
-        // try to allocate the space in clouds based on their size
-        // the huge ones will appear on the top, the big in the middle
-        // and the small in the lowest area to give a feeling of depth
-        let type = Cloud.getType(frame.name);
-        switch (type) {
-            case 'small':
-                lower = Number(this.game.config.height) * 2 / 3;
-                upper = Number(this.game.config.height);
-                break;
-            case 'big':
-                lower = Number(this.game.config.height) * 1 / 3;
-                upper = Number(this.game.config.height) * 2 / 3;
-                break;
-            case 'huge':
-                lower = 0;
-                upper = Number(this.game.config.height) * 1 / 3;
-                break;
-            default:
-                lower = 0;
-                upper = Number(this.game.config.height)
-                break;
+        let cloud = this.randomSpriteGenerator.getRandomDeadSpriteFromPool(this.cloudGroup);
+        if (cloud) {
+            let y, lower, upper: number;
+            let frameName = cloud.frame.name;
+            let type = Cloud.getType(frameName);
+            // try to allocate the space in clouds based on their size
+            // the huge ones will appear on the top, the big in the middle
+            // and the small in the lowest area to give a feeling of depth
+            switch (type) {
+                case 'small':
+                    lower = Number(this.game.config.height) * 2 / 3;
+                    upper = Number(this.game.config.height);
+                    break;
+                case 'big':
+                    lower = Number(this.game.config.height) * 1 / 3;
+                    upper = Number(this.game.config.height) * 2 / 3;
+                    break;
+                case 'huge':
+                    lower = 0;
+                    upper = Number(this.game.config.height) * 1 / 3;
+                    break;
+                default:
+                    lower = 0;
+                    upper = Number(this.game.config.height)
+                    break;
+            }
+            y = Phaser.Math.Between(lower, upper);
+            let x = Number(this.game.config.width) + cloud.width;
+            cloud.enableBody(true, x, y, true, true);
         }
-        y = Phaser.Math.Between(lower, upper);
-        let x = Number(this.game.config.width) + frame.width;
-
-        // Find first inactive sprite in group or add new sprite
-        this.cloudGroup.get(x, y, GlobalConstants.CLOUDS_TEXTURE, frame.name);
-        // this.add.existing(new Cloud(this, x, y, GlobalConstants.CLOUDS_TEXTURE, frame.name));
     }
 
 

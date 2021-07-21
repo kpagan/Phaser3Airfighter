@@ -1,8 +1,5 @@
 import Phaser from 'phaser';
 import StateMachine from '../core/StateMachine';
-import CallbackOnSprite from '../core/CallbackOnSprite';
-import GlobalConstants from '../core/GlobalConstants';
-
 
 const EnemyStates = {
     PATROLLING: 'PATROLLING',
@@ -19,10 +16,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     private speed: number = 0.2;
     private waypoint!: Phaser.Math.Vector2;
     private target!: Phaser.GameObjects.Components.Transform;
-
-
-    private destroyCallback!: CallbackOnSprite;
-
     private stateMacine: StateMachine;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
@@ -34,10 +27,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.randomX = Math.random();
         this.randomAmplitude = Math.random();
         this.randomFrequency = Math.random();
-        // TODO set collision
-        // this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_ENEMY);
-        // this.setCollidesWith([GlobalConstants.COLLISION_CATEGORY_PLAYER, GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET]);
-        // this.setOnCollide(this.handleCollision);
 
         this.stateMacine = new StateMachine(this, 'Enemy');
 
@@ -62,20 +51,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         let y = Phaser.Math.Between(0, height);
 
         return new Phaser.Math.Vector2(x, y);
-    }
-
-    handleCollision = (data: MatterJS.ICollisionPair) => {
-        let bodyA = data.bodyA as MatterJS.BodyType;
-        let bodyB = data.bodyB as MatterJS.BodyType;
-        if (bodyA.gameObject) {
-            console.log('bodyA {}', bodyA.gameObject.name);
-        }
-        if (bodyB.gameObject) {
-            console.log('bodyB {}', bodyB.gameObject.name);
-        }
-        if (this.destroyCallback) {
-            this.destroyCallback(this);
-        }
     }
 
     // update(t: number, dt: number) {
@@ -141,7 +116,4 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.target = target;
     }
 
-    onDestroy(callback: CallbackOnSprite) {
-        this.destroyCallback = callback;
-    }
 }

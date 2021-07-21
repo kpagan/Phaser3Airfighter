@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import CallbackOnSprite from '../core/CallbackOnSprite';
 import GlobalConstants from '../core/GlobalConstants';
 
 type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
@@ -76,8 +75,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.setAnim(PlayerAnims.NORMAL);
         }
 
-
-
         // console.log('Used: ' + this.bullets.getTotalUsed());
         // console.log('Free: ' + this.bullets.getTotalFree());
         // console.log('Pool Info: {}', this.poolInfo(this.bullets));
@@ -96,7 +93,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             if (bullet) {
                 this.displayFireFlash();
                 bullet.enableBody(true, x, y, true, true);
-                //bullet.onDestroy((sprite) => this.bullets.remove(sprite, true, true)); // TODO revisit pools logic. no need to destroy things. just recycle
                 this.lastFired = t + this.fireDelay;
             }
         }
@@ -177,8 +173,6 @@ export class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
 
     private speed = 1;
 
-    private destroyCallback!: CallbackOnSprite;
-
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FRAME);
         this.init();
@@ -189,34 +183,14 @@ export class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
         this.speed = Phaser.Math.GetSpeed(400, 1);
         this.setVelocityX(this.speed);
-        // TODO set collision
-        // this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET);
-        // this.setCollidesWith(GlobalConstants.COLLISION_CATEGORY_ENEMY);
-        // this.setOnCollide(this.handleCollision);
     }
-
-    // TODO remove MatterJS collision handler
-    // handleCollision = (data: MatterJS.ICollisionPair) => {
-    //     if (this.destroyCallback) {
-    //         this.destroyCallback(this);
-    //     }
-    // }
 
     update(t: number, dt: number) {
         this.x += this.speed * dt;
-        // TODO destroy sprite after getting off-screen
         if (this.x > this.scene.game.config.width) {
             this.disableBody(true, true);
-            // TODO revisit pools logic. no need to destroy things. just recycle
-            // this.destroyCallback(this);
         }
     }
-
-    // TODO revisit pools logic. no need to destroy things. just recycle
-    // onDestroy(callback: CallbackOnSprite) {
-    //     this.destroyCallback = callback;
-    // }
-
 
 }
 

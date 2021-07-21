@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import GlobalConstants from './GlobalConstants';
 
-export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> {
+export default class RandomSpriteGenerator<T extends Phaser.GameObjects.GameObject> {
 
     private scene: Phaser.Scene;
 
@@ -34,20 +34,17 @@ export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> 
         return T;
     }
 
-    getMultiplePool(texture: string, filter?: RegExp, groupConfig?: Phaser.Types.Physics.Arcade.PhysicsGroupConfig): Phaser.Physics.Arcade.Group {
+    getMultiplePool(texture: string, filter: RegExp = /.*/, groupConfig?: Phaser.Types.Physics.Arcade.PhysicsGroupConfig): Phaser.Physics.Arcade.Group {
         let metadata: Phaser.Textures.Texture = this.scene.textures.get(texture);
         let frames: Phaser.Textures.Frame[] = metadata.getFramesFromTextureSource(0);
-        let frameNames: string[] = [];
-        if (filter) {
-            frameNames = frames.filter((frame) => (frame.name.match(filter))).map(frame => frame.name);
-        }
+        let frameNames: string[] = frames.filter((frame) => (frame.name.match(filter))).map(frame => frame.name);
 
         let defaultConfig: Phaser.Types.Physics.Arcade.PhysicsGroupConfig = {};
 
 
         defaultConfig = {
             classType: this.spriteType,
-            runChildUpdate: true
+            runChildUpdate: true,            
         }
 
         let pool = this.scene.physics.add.group({
@@ -57,11 +54,19 @@ export default class RandomSpriteGenerator<T extends Phaser.GameObjects.Sprite> 
 
         pool.createMultiple({
             key: texture,
-            ...(frameNames.length !== 0 && { frame: frameNames }),
+            ...(frameNames.length !== 0 && { frame: frameNames }),            
             active: false,
             visible: false,
         });
 
         return pool;
+    }
+
+    getRandomDeadSpriteFromPool(pool: Phaser.GameObjects.Group): T | undefined {
+        let dead = pool.getMatching('active', false);
+        if (dead && dead.length > 0) {
+            return dead[Phaser.Math.Between(0, dead.length - 1)];
+        }
+        return undefined;
     }
 }

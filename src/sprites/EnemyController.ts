@@ -14,17 +14,6 @@ export default class EnemyController {
     constructor(scene: Phaser.Scene, target: Phaser.GameObjects.Components.Transform) {
         this.scene = scene;
         this.target = target;
-        // this.pool = this.scene.physics.add.group({
-        //     classType: Enemy,
-        //     runChildUpdate: true
-        // });
-
-
-        // this.pool.createMultiple({
-        //     key: GlobalConstants.ENEMIES_TEXTURE,
-        //     active: false,
-        //     visible: false
-        // })
 
         this.spriteGenerator = new RandomSpriteGenerator<Enemy>(this.scene, Enemy);
 
@@ -42,8 +31,8 @@ export default class EnemyController {
     }
 
     handlePlayerEnemyCollision(obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) {
-        console.log('obj1: {}', obj1)
-        console.log('obj2: {}', obj2)
+        // console.log('obj1: {}', obj1)
+        // console.log('obj2: {}', obj2)
     }
 
     handlePlayerBulletEnemyCollision(obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) {
@@ -54,17 +43,14 @@ export default class EnemyController {
     }
 
     private addEnemy() {
-        // let enemy = this.spriteGenerator.getRandomSprite(GlobalConstants.ENEMIES_TEXTURE, /Ship\d\/Ship\d/);
-        // enemy.onDestroy((sprite) => this.pool.remove(sprite, true, true));
-        let dead = this.pool.getMatching('active', false);
-        if (dead && dead.length > 0) {
-            let enemy = dead[Phaser.Math.Between(0, dead.length - 1)];
+
+        let enemy = this.spriteGenerator.getRandomDeadSpriteFromPool(this.pool);
+        if (enemy) {
             let y = Phaser.Math.Between(0, Number(this.scene.game.config.height));
             let x = Number(this.scene.game.config.width) + enemy.width;
             enemy.enableBody(true, x, y, true, true);
             enemy.setTarget(this.target);
         }
-        // this.pool.add(enemy);
     }
 
     public getPool() {

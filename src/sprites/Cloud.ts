@@ -11,36 +11,32 @@ interface CloudConfig {
 
 const CLOUD_CONFIG: { [key: string]: CloudConfig } = {
     'small': {
-        velocity: 3,
+        velocity: 300,
         mass: 10,
         depth: 100
     },
     'big': {
-        velocity: 2,
+        velocity: 200,
         mass: 20,
         depth: 0
     },
     'huge': {
-        velocity: 1,
+        velocity: 100,
         mass: 30,
         depth: 0
     }
 };
 export default class Cloud extends Phaser.Physics.Arcade.Image {
 
+    private speed: number;
+
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
         super(scene, x, y, texture, frame);
-        this.setName('Cloud_' + frame);
-        let type = Cloud.getType(frame);
-        let speed = CLOUD_CONFIG[type].velocity + Math.random();
-        // TODO set velocity but not in constructor
-        //this.setVelocity(-speed, 0);
-        // this.setMass(CLOUD_CONFIG[type].mass);
-
-        // TODO set collision
-        // this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_NONE);
+        this.setName('Cloud_' + this.frame.name);
+        let type = Cloud.getType(this.frame.name);
         this.setDepth(CLOUD_CONFIG[type].depth);
-        // this.setFrictionAir(0);
+        let velocity = CLOUD_CONFIG[type].velocity;
+        this.speed = velocity + Math.random() * velocity;
     }
 
     static getType(frame: string): string {
@@ -52,9 +48,11 @@ export default class Cloud extends Phaser.Physics.Arcade.Image {
     }
 
     update(t: number, dt: number) {
+        this.setVelocityX(-this.speed);
+        console.log(this.name, " -> x: ", this.x, ", width: ", this.width)
         super.update(t, dt);
         if (this.x < -(this.width / 2)) {
-            this.destroy();
+            this.disableBody(true, true);
         }
     }
 
