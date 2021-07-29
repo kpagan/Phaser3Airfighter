@@ -6,6 +6,7 @@ import Player from '../sprites/Player';
 import EnemyController from '../sprites/EnemyController';
 import GlobalConstants from '../core/GlobalConstants';
 import RandomSpriteGenerator from '../core/RandomSpriteGenerator';
+import ParallaxBackground from '../core/ParallaxBackground';
 
 const CLOUD_SPAWN = 3;
 
@@ -14,9 +15,13 @@ type CursorKeys = Phaser.Types.Input.Keyboard.CursorKeys;
 export default class CloudScene extends Phaser.Scene {
     private cloudGroup!: Phaser.GameObjects.Group;
     private cursors!: CursorKeys;
-    private player?: Player;
+    private player!: Player;
     private enemies!: EnemyController;
     private randomSpriteGenerator!: RandomSpriteGenerator<Cloud>;
+    private backgrounds!: ParallaxBackground;
+
+    private width!: number
+    private height!: number;
 
     constructor() {
         super('cloud-scene')
@@ -27,32 +32,67 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     create() {
-        this.randomSpriteGenerator = new RandomSpriteGenerator<Cloud>(this, Cloud);
-        this.cloudGroup = this.randomSpriteGenerator.getMultiplePool(GlobalConstants.CLOUDS_TEXTURE, undefined, {
-            maxSize: 5
-        });
-        this.time.addEvent({
-            startAt: 0,
-            delay: 3000,
-            loop: true,
-            callback: () => this.addCloud()
-        });
+        this.width = <number> this.game.config.width;
+        this.height = <number> this.game.config.height;
 
-        this.player = this.add.player(0, this.scale.height / 2, this.cursors);
+        this.backgrounds = new ParallaxBackground(0.5);
+
+        this.backgrounds.addSprite(
+            this.add.tileSprite(0, this.height, 0, 0, 
+            GlobalConstants.BACK_DESERT1_TEXTURE, 
+            GlobalConstants.BACK_DESERT1_FRAME1));
+
+        this.backgrounds.addSprite(
+            this.add.tileSprite(0, this.height, 0, 0, 
+            GlobalConstants.BACK_DESERT1_TEXTURE, 
+            GlobalConstants.BACK_DESERT1_FRAME2));
+
+        this.backgrounds.addSprite(
+            this.add.tileSprite(0, this.height, 0, 0, 
+            GlobalConstants.BACK_DESERT1_TEXTURE, 
+            GlobalConstants.BACK_DESERT1_FRAME3));
+
+        this.backgrounds.addSprite(
+            this.add.tileSprite(0, this.height, 0, 0, 
+            GlobalConstants.BACK_DESERT1_TEXTURE, 
+            GlobalConstants.BACK_DESERT1_FRAME4));
+
+        this.backgrounds.addSprite(
+            this.add.tileSprite(0, this.height, 0, 0, 
+            GlobalConstants.BACK_DESERT1_TEXTURE, 
+            GlobalConstants.BACK_DESERT1_FRAME5));
+
+        
+
+        // this.randomSpriteGenerator = new RandomSpriteGenerator<Cloud>(this, Cloud);
+        // this.cloudGroup = this.randomSpriteGenerator.getMultiplePool(GlobalConstants.CLOUDS_TEXTURE, undefined, {
+        //     maxSize: 5
+        // });
+        // this.time.addEvent({
+        //     startAt: 0,
+        //     delay: 3000,
+        //     loop: true,
+        //     callback: () => this.addCloud()
+        // });
+
+        this.player = this.add.player(0, this.height / 2, this.cursors);
         // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
         this.physics.add.collider(this.player, this.enemies.getPool(), this.enemies.handlePlayerEnemyCollision, undefined, this);
         this.physics.add.collider(this.player.getBullets(), this.enemies.getPool(), this.enemies.handlePlayerBulletEnemyCollision, undefined, this);
 
     }
-  
+
     update(t: number, dt: number) {
+        this.physics.world.setBounds(this.player.x - this.width/2, this.player.y - this.height/2, this.width, this.height);
+
         if (this.player) {
             this.player.update(t, dt);
         }
         if (this.enemies) {
             this.enemies.update(t, dt);
         }
+        this.backgrounds.update(dt);
         // console.log(this.game.loop.actualFps);
     }
 
@@ -67,24 +107,24 @@ export default class CloudScene extends Phaser.Scene {
             // and the small in the lowest area to give a feeling of depth
             switch (type) {
                 case 'small':
-                    lower = Number(this.game.config.height) * 2 / 3;
-                    upper = Number(this.game.config.height);
+                    lower = this.height * 2 / 3;
+                    upper = this.height;
                     break;
                 case 'big':
-                    lower = Number(this.game.config.height) * 1 / 3;
-                    upper = Number(this.game.config.height) * 2 / 3;
+                    lower = this.height * 1 / 3;
+                    upper = this.height * 2 / 3;
                     break;
                 case 'huge':
                     lower = 0;
-                    upper = Number(this.game.config.height) * 1 / 3;
+                    upper = this.height * 1 / 3;
                     break;
                 default:
                     lower = 0;
-                    upper = Number(this.game.config.height)
+                    upper = this.height
                     break;
             }
             y = Phaser.Math.Between(lower, upper);
-            let x = Number(this.game.config.width) + cloud.width;
+            let x = this.width + cloud.width;
             cloud.enableBody(true, x, y, true, true);
         }
     }

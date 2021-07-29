@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\assets\\backgrounds",
+  "images": [
+    {
+      "name": "1.png",
+      "path": "C:/Development/GameDev/airfighter-phaser/public/assets/backgrounds/1.png",
+      "folder": ""
+    },
+    {
+      "name": "2.png",
+      "path": "C:/Development/GameDev/airfighter-phaser/public/assets/backgrounds/2.png",
+      "folder": ""
+    },
+    {
+      "name": "3.png",
+      "path": "C:/Development/GameDev/airfighter-phaser/public/assets/backgrounds/3.png",
+      "folder": ""
+    },
+    {
+      "name": "4.png",
+      "path": "C:/Development/GameDev/airfighter-phaser/public/assets/backgrounds/4.png",
+      "folder": ""
+    },
+    {
+      "name": "5.png",
+      "path": "C:/Development/GameDev/airfighter-phaser/public/assets/backgrounds/5.png",
+      "folder": ""
+    }
+  ],
+  "folders": [],
+  "packOptions": {
+    "textureName": "desert1",
+    "textureFormat": "png",
+    "removeFileExtension": true,
+    "prependFolderName": false,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Phaser 3",
+    "fileName": "pack-result",
+    "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\assets\\backgrounds",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": true,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "OptimalPacker",
+    "packerMethod": "Automatic"
+  }
+}
