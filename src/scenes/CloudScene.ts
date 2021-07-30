@@ -32,38 +32,23 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     create() {
-        this.width = <number> this.game.config.width;
-        this.height = <number> this.game.config.height;
+        this.width = <number>this.game.config.width;
+        this.height = <number>this.game.config.height;
 
         this.backgrounds = new ParallaxBackground(0.5);
+        let frames = [
+            GlobalConstants.BACK_DESERT1_FRAME1,
+            GlobalConstants.BACK_DESERT1_FRAME2,
+            GlobalConstants.BACK_DESERT1_FRAME3,
+            GlobalConstants.BACK_DESERT1_FRAME4,
+            GlobalConstants.BACK_DESERT1_FRAME5
+        ];
 
-        this.backgrounds.addSprite(
-            this.add.tileSprite(0, this.height, 0, 0, 
-            GlobalConstants.BACK_DESERT1_TEXTURE, 
-            GlobalConstants.BACK_DESERT1_FRAME1));
-
-        this.backgrounds.addSprite(
-            this.add.tileSprite(0, this.height, 0, 0, 
-            GlobalConstants.BACK_DESERT1_TEXTURE, 
-            GlobalConstants.BACK_DESERT1_FRAME2));
-
-        this.backgrounds.addSprite(
-            this.add.tileSprite(0, this.height, 0, 0, 
-            GlobalConstants.BACK_DESERT1_TEXTURE, 
-            GlobalConstants.BACK_DESERT1_FRAME3));
-
-        this.backgrounds.addSprite(
-            this.add.tileSprite(0, this.height, 0, 0, 
-            GlobalConstants.BACK_DESERT1_TEXTURE, 
-            GlobalConstants.BACK_DESERT1_FRAME4));
-
-        this.backgrounds.addSprite(
-            this.add.tileSprite(0, this.height, 0, 0, 
-            GlobalConstants.BACK_DESERT1_TEXTURE, 
-            GlobalConstants.BACK_DESERT1_FRAME5));
-
+        for (let frame of frames) {
+            this.backgrounds.addSprite(this.add.tileSprite(0, this.height, 0, 0,
+                GlobalConstants.BACK_DESERT1_TEXTURE, frame));
+        }
         
-
         // this.randomSpriteGenerator = new RandomSpriteGenerator<Cloud>(this, Cloud);
         // this.cloudGroup = this.randomSpriteGenerator.getMultiplePool(GlobalConstants.CLOUDS_TEXTURE, undefined, {
         //     maxSize: 5
@@ -84,7 +69,7 @@ export default class CloudScene extends Phaser.Scene {
     }
 
     update(t: number, dt: number) {
-        this.physics.world.setBounds(this.player.x - this.width/2, this.player.y - this.height/2, this.width, this.height);
+        this.physics.world.setBounds(this.player.x - this.width / 2, this.player.y - this.height / 2, this.width, this.height);
 
         if (this.player) {
             this.player.update(t, dt);

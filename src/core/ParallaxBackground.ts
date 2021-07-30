@@ -12,8 +12,8 @@ export default class ParallaxBackground {
      * @param backgroundSpeedFactor a factor to controll the parallax speed. The value is interpolated between 0 and 1
      */
     constructor(backgroundSpeedFactor: number) {
-        this.backgroundSpeedFactor = Phaser.Math.SmoothStep(backgroundSpeedFactor, 0, 1);
         this.tileSprites = [];
+        this.backgroundSpeedFactor = Phaser.Math.SmoothStep(backgroundSpeedFactor, 0, 1);
     }
 
     public addSprite(sprite: TileSprite) {

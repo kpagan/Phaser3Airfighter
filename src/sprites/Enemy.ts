@@ -21,9 +21,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
         super(scene, x, y, texture, frame);
         this.setName('Enemy');
-        this.setScale(0.5);
         this.setFlipX(true);
-        scene.add.existing(this);
         this.randomX = Math.random();
         this.randomAmplitude = Math.random();
         this.randomFrequency = Math.random();

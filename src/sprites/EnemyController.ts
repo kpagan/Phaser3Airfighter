@@ -50,6 +50,8 @@ export default class EnemyController {
             let x = Number(this.scene.game.config.width) + enemy.width;
             enemy.enableBody(true, x, y, true, true);
             enemy.setTarget(this.target);
+            // enemy.setScale(0.5);
+            enemy.setSize(0.5 * enemy.width, 0.4 * enemy.height);
         }
     }
 
