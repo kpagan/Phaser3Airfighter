@@ -62,6 +62,34 @@ export default class RandomSpriteGenerator<T extends Phaser.GameObjects.GameObje
         return pool;
     }
 
+    getMultipleMatterPool(texture: string, filter: RegExp = /.*/, groupConfig?: Phaser.Types.GameObjects.Group.GroupConfig): Phaser.GameObjects.Group {
+        let metadata: Phaser.Textures.Texture = this.scene.textures.get(texture);
+        let frames: Phaser.Textures.Frame[] = metadata.getFramesFromTextureSource(0);
+        let frameNames: string[] = frames.filter((frame) => (frame.name.match(filter))).map(frame => frame.name);
+
+        let defaultConfig: Phaser.Types.GameObjects.Group.GroupConfig = {};
+
+
+        defaultConfig = {
+            classType: this.spriteType,
+            runChildUpdate: true,
+        }
+
+        let pool = this.scene.add.group({
+            ...defaultConfig,
+            ...groupConfig,
+        });
+
+        pool.createMultiple({
+            key: texture,
+            ...(frameNames.length !== 0 && { frame: frameNames }),            
+            active: false,
+            visible: false,
+        });
+
+        return pool;
+    }
+
     getRandomDeadSpriteFromPool(pool: Phaser.GameObjects.Group): T | undefined {
         let dead = pool.getMatching('active', false);
         if (dead && dead.length > 0) {

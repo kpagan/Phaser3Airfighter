@@ -9,7 +9,7 @@ export default class EnemyController {
     private scene: Phaser.Scene;
     private pool: Phaser.GameObjects.Group;
     private spriteGenerator: RandomSpriteGenerator<Enemy>;
-    private target: Phaser.GameObjects.Components.Transform
+    private target: Phaser.GameObjects.Components.Transform;
 
     constructor(scene: Phaser.Scene, target: Phaser.GameObjects.Components.Transform) {
         this.scene = scene;
@@ -17,7 +17,12 @@ export default class EnemyController {
 
         this.spriteGenerator = new RandomSpriteGenerator<Enemy>(this.scene, Enemy);
 
-        this.pool = this.spriteGenerator.getMultiplePool(GlobalConstants.ENEMIES_TEXTURE, /Ship\d\/Ship\d/);
+        this.pool = this.spriteGenerator.getMultipleMatterPool(GlobalConstants.ENEMIES_TEXTURE, /Ship\d\/Ship\d/, {
+            createCallback: (item: Phaser.GameObjects.GameObject) => {
+                let enemy = item as Enemy;
+                enemy.disableBody();
+            }
+        });
 
         this.scene.time.addEvent({
             startAt: 0,
@@ -48,10 +53,10 @@ export default class EnemyController {
         if (enemy) {
             let y = Phaser.Math.Between(0, Number(this.scene.game.config.height));
             let x = Number(this.scene.game.config.width) + enemy.width;
-            enemy.enableBody(true, x, y, true, true);
+            // enemy.enableBody(true, x, y, true, true); // arcade specific
+            enemy.enableBody(x, y); // matterjs
             enemy.setTarget(this.target);
-            // enemy.setScale(0.5);
-            enemy.setSize(0.5 * enemy.width, 0.4 * enemy.height);
+            // enemy.setSize(0.5 * enemy.width, 0.4 * enemy.height); // no need as the shape is drawn by PhysicsEditor
         }
     }
 

@@ -18,9 +18,10 @@ declare global {
 }
 
 
-export default class Player extends Phaser.Physics.Arcade.Sprite {
+export default class Player extends Phaser.Physics.Matter.Sprite {
 
-    private speed: number = 100;
+    // private speed: number = 100; // arcade speed
+    private speed: number = 0.1; // matterjs speed
     private acceleration: number = 0.3;
     private bullets: Phaser.GameObjects.Group;
     private lastFired: number = 0;
@@ -29,15 +30,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     private cursors: CursorKeys;
 
     constructor(scene: Phaser.Scene, x: number, y: number, cursors: CursorKeys) {
-        super(scene, x, y, GlobalConstants.PLAYER_TEXTURE, 'ship-01');
+        super(scene.matter.world, x, y, GlobalConstants.PLAYER_TEXTURE, 'ship-01');
         this.cursors = cursors;
         this.setName('Player');
         this.createAnimations();
         this.setAnim(PlayerAnims.NORMAL);
         this.setDepth(2);
-        this.bullets = this.scene.physics.add.group({
+        // this.bullets = this.scene.physics.add.group({ // arcade physics
+        this.bullets = this.scene.add.group({ // matterjs specific
             classType: PlayerBullet,
             runChildUpdate: true,
+            createCallback: (item: Phaser.GameObjects.GameObject) => {
+                let bullet = item as PlayerBullet;
+                bullet.disableBody();
+            }
         });
         this.bullets.createMultiple({
             key: GlobalConstants.PLAYER_BULLET_TEXTURE,
@@ -48,30 +54,39 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         });
         this.fireFlash = scene.add.image(this.x, this.y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FLASH_FRAME);
         this.fireFlash.setAlpha(0).setDepth(3).setOrigin(0.2, 0.5).setBlendMode(Phaser.BlendModes.ADD);
+
+        // MatterJS stuff
+        this.setMass(200);
+        this.setFrictionAir(0.05);
+        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
     }
 
     update(t: number, dt: number) {
 
         if (this.cursors.left.isDown) {
-            this.setVelocityX(this.accelerate(this.body.velocity.x, dt, false));
+            // this.setVelocityX(this.accelerate(this.body.velocity.x, dt, false)); // arcade
+            this.thrustBack(this.speed); // matter
         }
         else if (this.cursors.right.isDown) {
-            this.setVelocityX(this.accelerate(this.body.velocity.x, dt, true));
+            // this.setVelocityX(this.accelerate(this.body.velocity.x, dt, true)); // arcade
+            this.thrust(this.speed); // matterjs
         } else {
             // decelerate until velocity X is 0
-            this.setVelocityX(this.decelerate(this.body.velocity.x, dt));
+            // this.setVelocityX(this.decelerate(this.body.velocity.x, dt)); // arcade
         }
 
         if (this.cursors.up.isDown) {
-            this.setVelocityY(this.accelerate(this.body.velocity.y, dt, false));
+            // this.setVelocityY(this.accelerate(this.body.velocity.y, dt, false)); // arcade
+            this.thrustLeft(this.speed); // matterjs
             this.setAnim(PlayerAnims.UP);
         }
         else if (this.cursors.down.isDown) {
-            this.setVelocityY(this.accelerate(this.body.velocity.y, dt, true));
+            // this.setVelocityY(this.accelerate(this.body.velocity.y, dt, true)); // arcade
+            this.thrustRight(this.speed); // matterjs
             this.setAnim(PlayerAnims.DOWN);
         } else {
             // decelerate until velocity Y is 0
-            this.setVelocityY(this.decelerate(this.body.velocity.y, dt));
+            // this.setVelocityY(this.decelerate(this.body.velocity.y, dt)); // arcade
             this.setAnim(PlayerAnims.NORMAL);
         }
 
@@ -92,7 +107,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             let bullet = this.bullets.getFirstDead();
             if (bullet) {
                 this.displayFireFlash();
-                bullet.enableBody(true, x, y, true, true);
+                // bullet.enableBody(true, x, y, true, true); arcade specific
+                bullet.enableBody(x, y); // matterjs specific
                 this.lastFired = t + this.fireDelay;
             }
         }
@@ -169,20 +185,36 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
 }
 
-export class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
+export class PlayerBullet extends Phaser.Physics.Matter.Sprite {
 
     private speed = 1;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FRAME);
+        super(scene.matter.world, x, y, GlobalConstants.PLAYER_BULLET_TEXTURE, GlobalConstants.PLAYER_BULLET_FRAME);
         this.init();
     }
 
     init() {
         this.setName('PlayerBullet');
-        this.scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
-        this.speed = Phaser.Math.GetSpeed(400, 1);
-        this.setVelocityX(this.speed);
+        // arcade physics specific
+        // this.scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
+        // this.speed = Phaser.Math.GetSpeed(400, 1);
+        // this.setVelocityX(this.speed);
+
+
+        // MatterJS specific
+        this.setMass(1);
+        this.setAngle(90);
+        this.setScale(0.1);
+        this.setVelocityY(0);
+        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET);
+        this.setCollidesWith(GlobalConstants.COLLISION_CATEGORY_ENEMY);
+        this.setOnCollide(this.handleCollision);
+
+    }
+
+    handleCollision = (data: MatterJS.ICollisionPair) => {
+        this.disableBody(true, true);
     }
 
     update(t: number, dt: number) {
@@ -192,6 +224,28 @@ export class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    /**
+     * MatterJS specific
+     * @param disableActive 
+     * @param disableVisible 
+     */
+    public disableBody(disableActive: boolean = true, disableVisible: boolean = true) {
+        if (disableActive) this.setActive(false);
+        if (disableVisible) this.setVisible(false);
+        this.removeInteractive();
+        this.world.remove(this.body);
+    }
+
+    /**
+     * MatterJS specific
+     */
+    enableBody(x: number, y: number) {
+        this.setActive(true);
+        this.setVisible(true);
+        this.world.add(this.body);
+        this.setPosition(x, y);
+        this.setFixedRotation();
+    }
 }
 
 Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, cursors: CursorKeys) {
@@ -199,10 +253,11 @@ Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.G
 
     this.displayList.add(sprite);
     this.updateList.add(sprite);
-    this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
+    // this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
     // this defines the collision area but it will be better defined using specific tool
-    sprite.body.setSize(sprite.width * 0.95, sprite.height * 0.8);
+    // sprite.body.setSize(sprite.width * 0.95, sprite.height * 0.8);
     sprite.setOrigin(0.5, 0.5);
-    sprite.setCollideWorldBounds();
+    // sprite.setCollideWorldBounds();
+    sprite.setFixedRotation();
     return sprite;
 })

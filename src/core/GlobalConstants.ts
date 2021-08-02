@@ -17,10 +17,6 @@ export default class GlobalConstants {
 
 
     public static COLLISION_CATEGORY_NONE = 0;
-    public static COLLISION_CATEGORY_NONE = 0;
-    public static COLLISION_CATEGORY_NONE = 0;
-    public static COLLISION_CATEGORY_NONE = 0;
-    public static COLLISION_CATEGORY_NONE = 0;
     public static COLLISION_CATEGORY_PLAYER = 1;
     public static COLLISION_CATEGORY_PLAYER_BULLET = 2;
     public static COLLISION_CATEGORY_ENEMY = 4;

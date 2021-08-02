@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import GlobalConstants from '../core/GlobalConstants';
 import StateMachine from '../core/StateMachine';
 
 const EnemyStates = {
@@ -8,7 +9,7 @@ const EnemyStates = {
     DEAD: 'DEAD',
     FIRING: 'FIRING'
 }
-export default class Enemy extends Phaser.Physics.Arcade.Sprite {
+export default class Enemy extends Phaser.Physics.Matter.Sprite {
 
     private randomX: number;
     private randomAmplitude: number;
@@ -19,13 +20,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     private stateMacine: StateMachine;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame: string) {
-        super(scene, x, y, texture, frame);
+        super(scene.matter.world, x, y, texture, frame);
         this.setName('Enemy');
-        this.setFlipX(true);
         this.randomX = Math.random();
         this.randomAmplitude = Math.random();
         this.randomFrequency = Math.random();
-
+     
         this.stateMacine = new StateMachine(this, 'Enemy');
 
         this.stateMacine
@@ -38,6 +38,29 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 onUpdate: this.evadingOnUpdate
             })
             .setState(EnemyStates.PATROLLING);
+
+            // MatterJS stuff
+            this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_ENEMY);
+            this.setCollidesWith([GlobalConstants.COLLISION_CATEGORY_PLAYER, GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET]);
+            let shapes = this.scene.cache.json.get('enemy-shapes');
+            let name = frame.split('/')[1];
+            this.setBody(shapes[name]);
+
+            // If you set the shape from the PhysicsEditor then the setOnCollide seems to not work anymore, using this.on('collide', ...) instead
+//            this.setOnCollide(this.handleCollision);
+            this.on('collide', this.collide, this);
+            
+    }
+
+    collide = (bodyB: MatterJS.BodyType, bodyA: MatterJS.BodyType, pair: MatterJS.ICollisionPair) => {
+        if (bodyA.gameObject) {
+            console.dir('bodyA {}', bodyA.gameObject.name);
+        }
+        if (bodyB.gameObject) {
+            console.dir('bodyB {}', bodyB.gameObject.name);
+        }
+        console.dir('Pair {}', pair);
+        this.disableBody();
     }
 
     findWaypoint(): Phaser.Math.Vector2 {
@@ -64,7 +87,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.waypoint = this.findWaypoint();
     }
 
-    private patrollingOnUpdate(t:number, dt: number) {
+    private patrollingOnUpdate(t: number, dt: number) {
         let distance = Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y);
         if (distance < 100) {
             this.stateMacine.setState(EnemyStates.EVADING);
@@ -112,6 +135,24 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     setTarget(target: Phaser.GameObjects.Components.Transform) {
         this.target = target;
+    }
+
+    enableBody(x: number, y: number) {
+        this.setPosition(x, y);        
+        this.setActive(true);
+        this.setVisible(true);
+        this.world.add(this.body);
+        this.setFlipX(true);
+        this.setFixedRotation();
+        this.setInteractive();
+
+    }
+
+    public disableBody(disableActive: boolean = true, disableVisible: boolean = true) {
+        if (disableActive) this.setActive(false);
+        if (disableVisible) this.setVisible(false);
+        this.removeInteractive();
+        this.world.remove(this.body);
     }
 
 }

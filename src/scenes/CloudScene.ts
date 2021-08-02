@@ -7,6 +7,7 @@ import EnemyController from '../sprites/EnemyController';
 import GlobalConstants from '../core/GlobalConstants';
 import RandomSpriteGenerator from '../core/RandomSpriteGenerator';
 import ParallaxBackground from '../core/ParallaxBackground';
+import Debug from '../core/Debug';
 
 const CLOUD_SPAWN = 3;
 
@@ -19,6 +20,7 @@ export default class CloudScene extends Phaser.Scene {
     private enemies!: EnemyController;
     private randomSpriteGenerator!: RandomSpriteGenerator<Cloud>;
     private backgrounds!: ParallaxBackground;
+    private debug!: Debug;
 
     private width!: number
     private height!: number;
@@ -63,13 +65,16 @@ export default class CloudScene extends Phaser.Scene {
         this.player = this.add.player(0, this.height / 2, this.cursors);
         // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
-        this.physics.add.collider(this.player, this.enemies.getPool(), this.enemies.handlePlayerEnemyCollision, undefined, this);
-        this.physics.add.collider(this.player.getBullets(), this.enemies.getPool(), this.enemies.handlePlayerBulletEnemyCollision, undefined, this);
+        
+        // Arcade collision detection
+        // this.physics.add.collider(this.player, this.enemies.getPool(), this.enemies.handlePlayerEnemyCollision, undefined, this);
+        // this.physics.add.collider(this.player.getBullets(), this.enemies.getPool(), this.enemies.handlePlayerBulletEnemyCollision, undefined, this);
 
+        this.debug = new Debug(this);
     }
 
     update(t: number, dt: number) {
-        this.physics.world.setBounds(this.player.x - this.width / 2, this.player.y - this.height / 2, this.width, this.height);
+        // this.physics.world.setBounds(this.player.x - this.width / 2, this.player.y - this.height / 2, this.width, this.height);
 
         if (this.player) {
             this.player.update(t, dt);
@@ -78,7 +83,7 @@ export default class CloudScene extends Phaser.Scene {
             this.enemies.update(t, dt);
         }
         this.backgrounds.update(dt);
-        // console.log(this.game.loop.actualFps);
+        this.debug.msg('FPS: ' + Math.floor(this.game.loop.actualFps));
     }
 
     private addCloud(): void {
