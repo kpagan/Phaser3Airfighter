@@ -17,7 +17,10 @@ declare global {
     }
 }
 
-
+const defaultBody: Phaser.Types.Physics.Matter.MatterSetBodyConfig = {
+    type: 'fromVerts',
+    verts: []
+}
 export default class Player extends Phaser.Physics.Matter.Sprite {
 
     // private speed: number = 100; // arcade speed
@@ -28,13 +31,13 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     private fireDelay: number = 500;
     private fireFlash: Phaser.GameObjects.Image;
     private cursors: CursorKeys;
+    private shapes: any;
 
     constructor(scene: Phaser.Scene, x: number, y: number, cursors: CursorKeys) {
         super(scene.matter.world, x, y, GlobalConstants.PLAYER_TEXTURE, 'ship-01');
         this.cursors = cursors;
         this.setName('Player');
         this.createAnimations();
-        this.setAnim(PlayerAnims.NORMAL);
         this.setDepth(2);
         // this.bullets = this.scene.physics.add.group({ // arcade physics
         this.bullets = this.scene.add.group({ // matterjs specific
@@ -59,6 +62,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setMass(200);
         this.setFrictionAir(0.05);
         this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
+        this.shapes = this.scene.cache.json.get('player-shapes');
+        this.setBody(this.getBodyConfig('normal'));
+        // end of MatterJS stuff
+
+        this.setAnim(PlayerAnims.NORMAL);
+    }
+
+    private getBodyConfig(str: string) {
+        let bodyConfig: Phaser.Types.Physics.Matter.MatterSetBodyConfig = {};
+        Object.assign(bodyConfig, defaultBody);
+        bodyConfig.verts = this.shapes[str].vertices;
+        return bodyConfig;
     }
 
     update(t: number, dt: number) {
@@ -94,7 +109,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         // console.log('Free: ' + this.bullets.getTotalFree());
         // console.log('Pool Info: {}', this.poolInfo(this.bullets));
     }
-    
+
     poolInfo(group: Phaser.GameObjects.Group) {
         return `${group.name} ${group.getLength()} (${group.countActive(true)}:${group.countActive(false)})`;
     }
@@ -151,6 +166,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     private setAnim(anim: string) {
+        switch (anim) {
+            case PlayerAnims.UP:
+                this.setBody(this.getBodyConfig('up'));
+                break;
+            case PlayerAnims.DOWN:
+                this.setBody(this.getBodyConfig('down'));
+                break;
+            case PlayerAnims.NORMAL:
+            default:
+                this.setBody(this.getBodyConfig('normal'));
+                break;
+        }
         this.play(anim);
     }
 
@@ -203,14 +230,12 @@ export class PlayerBullet extends Phaser.Physics.Matter.Sprite {
 
 
         // MatterJS specific
+        this.setCircle(this.height * 0.2)
         this.setMass(1);
-        this.setAngle(90);
-        this.setScale(0.1);
         this.setVelocityY(0);
         this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET);
         this.setCollidesWith(GlobalConstants.COLLISION_CATEGORY_ENEMY);
         this.setOnCollide(this.handleCollision);
-
     }
 
     handleCollision = (data: MatterJS.ICollisionPair) => {
@@ -245,6 +270,7 @@ export class PlayerBullet extends Phaser.Physics.Matter.Sprite {
         this.world.add(this.body);
         this.setPosition(x, y);
         this.setFixedRotation();
+        this.setOrigin(0.95, 0.5);        
     }
 }
 

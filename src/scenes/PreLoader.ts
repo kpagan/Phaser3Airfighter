@@ -17,6 +17,7 @@ export default class PreLoader extends Phaser.Scene {
 
         // Load body shapes from JSON file generated using PhysicsEditor
         this.load.json('enemy-shapes', './assets/ships/craftships-shapes.json');
+        this.load.json('player-shapes', './assets/ships/player-shapes.json');
 
     }
 
