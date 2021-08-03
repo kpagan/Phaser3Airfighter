@@ -17,10 +17,6 @@ declare global {
     }
 }
 
-const defaultBody: Phaser.Types.Physics.Matter.MatterSetBodyConfig = {
-    type: 'fromVerts',
-    verts: []
-}
 export default class Player extends Phaser.Physics.Matter.Sprite {
 
     // private speed: number = 100; // arcade speed
@@ -63,17 +59,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setFrictionAir(0.05);
         this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
         this.shapes = this.scene.cache.json.get('player-shapes');
-        this.setBody(this.getBodyConfig('normal'));
+        this.setBody(this.shapes.normal);
         // end of MatterJS stuff
 
         this.setAnim(PlayerAnims.NORMAL);
-    }
-
-    private getBodyConfig(str: string) {
-        let bodyConfig: Phaser.Types.Physics.Matter.MatterSetBodyConfig = {};
-        Object.assign(bodyConfig, defaultBody);
-        bodyConfig.verts = this.shapes[str].vertices;
-        return bodyConfig;
     }
 
     update(t: number, dt: number) {
@@ -168,14 +157,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     private setAnim(anim: string) {
         switch (anim) {
             case PlayerAnims.UP:
-                this.setBody(this.getBodyConfig('up'));
+                this.setBody(this.shapes.up);
                 break;
             case PlayerAnims.DOWN:
-                this.setBody(this.getBodyConfig('down'));
+                this.setBody(this.shapes.down);
                 break;
             case PlayerAnims.NORMAL:
             default:
-                this.setBody(this.getBodyConfig('normal'));
+                this.setBody(this.shapes.normal);
                 break;
         }
         this.play(anim);

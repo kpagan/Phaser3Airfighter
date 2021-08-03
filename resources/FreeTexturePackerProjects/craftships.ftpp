@@ -3,21 +3,44 @@
     "version": "0.6.7"
   },
   "savePath": "C:\\Development\\GameDev\\airfighter-phaser\\public\\assets\\ships",
-  "images": [],
-  "folders": [
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship1",
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship2",
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship3",
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship4",
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship5",
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship6",
-    "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Shots"
+  "images": [
+    {
+      "name": "Ship1L.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship1/Ship1L.png",
+      "folder": ""
+    },
+    {
+      "name": "Ship2L.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship2/Ship2L.png",
+      "folder": ""
+    },
+    {
+      "name": "Ship3L.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship3/Ship3L.png",
+      "folder": ""
+    },
+    {
+      "name": "Ship4L.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship4/Ship4L.png",
+      "folder": ""
+    },
+    {
+      "name": "Ship5L.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship5/Ship5L.png",
+      "folder": ""
+    },
+    {
+      "name": "Ship6L.png",
+      "path": "C:/Development/GameDev/Assets/Graphics/Shooters/Space/craftpix-991101-free-pixel-art-enemy-spaceship-2d-sprites/PNG_Parts&Spriter_Animation/Ship6/Ship6L.png",
+      "folder": ""
+    }
   ],
+  "folders": [],
   "packOptions": {
     "textureName": "craftships",
     "textureFormat": "png",
     "removeFileExtension": true,
-    "prependFolderName": true,
+    "prependFolderName": false,
     "base64Export": false,
     "tinify": false,
     "tinifyKey": "",
@@ -37,7 +60,7 @@
     "trimMode": "trim",
     "alphaThreshold": "0",
     "detectIdentical": true,
-    "packer": "OptimalPacker",
-    "packerMethod": "Automatic"
+    "packer": "MaxRectsBin",
+    "packerMethod": "BestShortSideFit"
   }
 }

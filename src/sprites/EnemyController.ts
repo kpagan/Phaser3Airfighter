@@ -17,7 +17,7 @@ export default class EnemyController {
 
         this.spriteGenerator = new RandomSpriteGenerator<Enemy>(this.scene, Enemy);
 
-        this.pool = this.spriteGenerator.getMultipleMatterPool(GlobalConstants.ENEMIES_TEXTURE, /Ship\d\/Ship\d/, {
+        this.pool = this.spriteGenerator.getMultipleMatterPool(GlobalConstants.ENEMIES_TEXTURE, /.*/, {
             createCallback: (item: Phaser.GameObjects.GameObject) => {
                 let enemy = item as Enemy;
                 enemy.disableBody();

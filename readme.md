@@ -7,6 +7,7 @@
   - [Build optimization](#build-optimization)
 - [ESLint](#eslint)
 - [NPM Scripts](#npm-scripts)
+- [MatterJS Shapes](#matterjs-shapes)
 
 # Dependencies
 - [Node.js](https://nodejs.org/en/)
@@ -131,3 +132,50 @@ A brief description of the scripts you'll find in the `package.json`:
 - **build**: Generates the production build in a `_build` folder located in the project's root.
 - **lint**: Runs the linter and prints any issues found
 - **lint:fix**: Runs the linter and executes automatic fixes. It'll also print any issues that couldn't be solved.
+
+# MatterJS Shapes
+In order to create collision shapes for the MatterJS physics engine you can use the Tiled collision editor.
+- In Tiled create a new Tileset.
+- Insert the images you like to create the collision shape.
+- Open the collision editor.
+- Start drawing the shape using the polygon and adding points in a clokwise rotation
+- Save your project and export as JSON.
+- Then edit the generated JSON or create a new one that will have the format below:
+```js
+{
+    "generator_info": "Some info",
+	"<SHAPE_NAME>": {
+		"type": "fromVerts",
+		"label": "<OPTONALY_SOME_LABEL>",
+		"verts": [
+			{
+            "x":0,
+            "y":0
+            },
+            ...
+        ]
+    }
+}
+```
+Then you can use the shape in your MatterJS sprite like this:
+```js
+// In Scene
+preload() {
+    this.load.json('enemy-shapes', './assets/ships/craftships-shapes.json');
+}
+
+
+// In sprite's constructor or in scene's create
+constructor() {
+    let shapes = this.scene.cache.json.get('enemy-shapes');
+    this.setBody(shapes[frame]);
+}
+
+// or in scene's create
+create() {
+    let sprite = this.matter.add.sprite(...);
+    let shapes = this.scene.cache.json.get('enemy-shapes');
+    sprite.setBody(shapes[frame]);
+}
+```
+

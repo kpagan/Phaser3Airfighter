@@ -43,23 +43,24 @@ export default class Enemy extends Phaser.Physics.Matter.Sprite {
             this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_ENEMY);
             this.setCollidesWith([GlobalConstants.COLLISION_CATEGORY_PLAYER, GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET]);
             let shapes = this.scene.cache.json.get('enemy-shapes');
-            let name = frame.split('/')[1];
-            this.setBody(shapes[name]);
+            this.setBody(shapes[frame]);
 
             // If you set the shape from the PhysicsEditor then the setOnCollide seems to not work anymore, using this.on('collide', ...) instead
-//            this.setOnCollide(this.handleCollision);
-            this.on('collide', this.collide, this);
+           this.setOnCollide(this.collide);
+            // this.on('collide', this.collide, this);
             
     }
 
-    collide = (bodyB: MatterJS.BodyType, bodyA: MatterJS.BodyType, pair: MatterJS.ICollisionPair) => {
+    collide = (data: MatterJS.ICollisionPair) => {
+        let bodyA = data.bodyA as MatterJS.BodyType;
+        let bodyB = data.bodyB as MatterJS.BodyType;
         if (bodyA.gameObject) {
             console.dir('bodyA {}', bodyA.gameObject.name);
         }
         if (bodyB.gameObject) {
             console.dir('bodyB {}', bodyB.gameObject.name);
         }
-        console.dir('Pair {}', pair);
+        console.dir('Pair {}', data);
         this.disableBody();
     }
 
@@ -142,7 +143,6 @@ export default class Enemy extends Phaser.Physics.Matter.Sprite {
         this.setActive(true);
         this.setVisible(true);
         this.world.add(this.body);
-        this.setFlipX(true);
         this.setFixedRotation();
         this.setInteractive();
 
