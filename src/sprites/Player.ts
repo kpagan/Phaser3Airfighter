@@ -60,6 +60,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_PLAYER);
         this.shapes = this.scene.cache.json.get('player-shapes');
         this.setBody(this.shapes.normal);
+        this.setFixedRotation(); // this does not work when colliding with world bounds
         // end of MatterJS stuff
 
         this.setAnim(PlayerAnims.NORMAL);
@@ -105,6 +106,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     preUpdate(t: number, dt: number) {
         super.preUpdate(t, dt);
+        this.setAngle(); // setting angle to 0 is the only thing that prevents the player from rotating when colliding with world bounds
         let { x, y } = this.getRightCenter();
         this.fireFlash.setPosition(x, y);
         if (this.cursors.space.isDown && t > this.lastFired) {

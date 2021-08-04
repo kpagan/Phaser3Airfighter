@@ -62,7 +62,26 @@ export default class CloudScene extends Phaser.Scene {
         //     callback: () => this.addCloud()
         // });
 
-        this.player = this.add.player(0, this.height / 2, this.cursors);
+        // create the world bounds manually instead of using this.matter.world.setBounds() in order to controll 
+        // which sprite collides with it and which not
+        let points = [
+            {x: this.width / 2, y: 0, w: this.width, h: 1}, // top
+            {x: this.width / 2, y: this.height, w: this.width, h: 1}, // bottom
+            {x: this.width , y: this.height / 2, w: 1, h: this.height}, // right
+            {x: 0, y: this.height / 2, w: 1, h: this.height} // left
+        ];
+
+        for (let p of points) {
+            this.matter.add.rectangle(p.x, p.y, p.w, p.h, {
+                isStatic: true,
+                collisionFilter: {
+                    category: GlobalConstants.COLLISION_CATEGORY_WORLD,
+                    mask: GlobalConstants.COLLISION_CATEGORY_PLAYER | GlobalConstants.COLLISION_CATEGORY_PLAYER_BULLET | GlobalConstants.COLLISION_CATEGORY_ENEMY_BULLET
+                }
+            });
+        }
+
+        this.player = this.add.player(this.width / 2, this.height / 2, this.cursors);
         // pass the player reference so enemies can track the player
         this.enemies = new EnemyController(this, this.player);
         
@@ -70,6 +89,7 @@ export default class CloudScene extends Phaser.Scene {
         // this.physics.add.collider(this.player, this.enemies.getPool(), this.enemies.handlePlayerEnemyCollision, undefined, this);
         // this.physics.add.collider(this.player.getBullets(), this.enemies.getPool(), this.enemies.handlePlayerBulletEnemyCollision, undefined, this);
 
+        
         this.debug = new Debug(this);
     }
 

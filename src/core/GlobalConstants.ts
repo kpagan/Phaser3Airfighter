@@ -21,6 +21,7 @@ export default class GlobalConstants {
     public static COLLISION_CATEGORY_PLAYER_BULLET = 2;
     public static COLLISION_CATEGORY_ENEMY = 4;
     public static COLLISION_CATEGORY_ENEMY_BULLET = 8;
+    public static COLLISION_CATEGORY_WORLD = 16;
 
 
 }
