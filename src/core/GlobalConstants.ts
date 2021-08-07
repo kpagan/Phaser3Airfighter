@@ -5,6 +5,7 @@ export default class GlobalConstants {
     public static PLAYER_BULLET_TEXTURE = 'player-bullets';
     public static PLAYER_BULLET_FRAME = 'player-bullet';
     public static PLAYER_BULLET_FLASH_FRAME = 'player-bullet-flash';
+    public static PLAYER_EXHAUST_TEXTURE = 'player-exhaust';
     public static BACK_DESERT1_TEXTURE = 'desert1';
     public static BACK_DESERT1_FRAME1 = '1';
     public static BACK_DESERT1_FRAME2 = '2';

@@ -13,6 +13,7 @@ export default class PreLoader extends Phaser.Scene {
         // this.load.atlas('enemies', './assets/ships/enemies.png', './assets/ships/enemies.json');
         this.load.atlas(GlobalConstants.ENEMIES_TEXTURE, './assets/ships/craftships.png', './assets/ships/craftships.json');
         this.load.atlas(GlobalConstants.PLAYER_BULLET_TEXTURE, './assets/ships/bullet.png', './assets/ships/bullet.json');
+        this.load.atlas(GlobalConstants.PLAYER_EXHAUST_TEXTURE, './assets/ships/player-exhaust.png', './assets/ships/player-exhaust.json');
         this.load.atlas(GlobalConstants.BACK_DESERT1_TEXTURE, './assets/backgrounds/desert1.png', './assets/backgrounds/desert1.json');
 
         // Load body shapes from JSON file generated using PhysicsEditor

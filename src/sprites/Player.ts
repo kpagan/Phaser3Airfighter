@@ -28,6 +28,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     private fireFlash: Phaser.GameObjects.Image;
     private cursors: CursorKeys;
     private shapes: any;
+    private exhaust!: PlayerExhaust;
 
     constructor(scene: Phaser.Scene, x: number, y: number, cursors: CursorKeys) {
         super(scene.matter.world, x, y, GlobalConstants.PLAYER_TEXTURE, 'ship-01');
@@ -62,6 +63,30 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setBody(this.shapes.normal);
         this.setFixedRotation(); // this does not work when colliding with world bounds
         // end of MatterJS stuff
+
+        let particles = this.scene.add.particles(GlobalConstants.PLAYER_EXHAUST_TEXTURE, 1);
+
+        let body = this.body as Phaser.Physics.Arcade.Body;
+        console.log(body.speed);
+/*        let emitter = particles.createEmitter({
+            frame: 'thrust-preview1',
+            quantity: 100,
+            speedY: { min: -10, max: 10 },
+            speedX: { min: -20, max: 20 },
+            accelerationX: -3000,
+            accelerationY: 0,
+            lifespan: { min: 100, max: 300 },
+            alpha: { start: 0.5, end: 0, ease: 'Sine.easeIn' },
+            scale: { start: 0.5, end: 0 },
+            rotate: { min: -180, max: 180 },
+            angle: { min: 30, max: 110 },
+            blendMode: 'SCREEN',
+            frequency: 1,
+            follow: this,
+            followOffset: { x: -55 },
+            tint: 0xcdcdcd
+
+        });*/
 
         this.setAnim(PlayerAnims.NORMAL);
     }
@@ -98,6 +123,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         // console.log('Used: ' + this.bullets.getTotalUsed());
         // console.log('Free: ' + this.bullets.getTotalFree());
         // console.log('Pool Info: {}', this.poolInfo(this.bullets));
+        let left = this.getLeftCenter();
+        this.exhaust.setX(left.x + 5).setY(left.y - 3);
+
     }
 
     poolInfo(group: Phaser.GameObjects.Group) {
@@ -201,6 +229,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         return this.bullets;
     }
 
+    public setExhaust(exhaust: PlayerExhaust): void {
+        this.exhaust = exhaust;
+    }
+
 }
 
 export class PlayerBullet extends Phaser.Physics.Matter.Sprite {
@@ -261,15 +293,42 @@ export class PlayerBullet extends Phaser.Physics.Matter.Sprite {
         this.world.add(this.body);
         this.setPosition(x, y);
         this.setFixedRotation();
-        this.setOrigin(0.95, 0.5);        
+        this.setOrigin(0.95, 0.5);
+    }
+}
+
+class PlayerExhaust extends Phaser.Physics.Matter.Sprite {
+
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene.matter.world, x, y, GlobalConstants.PLAYER_EXHAUST_TEXTURE);
+        this.setCollisionCategory(GlobalConstants.COLLISION_CATEGORY_NONE);
+        this.createAnimations();
+        this.play('thrust');
+    }
+
+    private createAnimations() {
+        this.anims.create({
+            key: 'thrust',
+            frames: [
+                { key: GlobalConstants.PLAYER_EXHAUST_TEXTURE, frame: 'thrust-preview1' },
+                { key: GlobalConstants.PLAYER_EXHAUST_TEXTURE, frame: 'thrust-preview2' }
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
     }
 }
 
 Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, cursors: CursorKeys) {
     let sprite = new Player(this.scene, x, y, cursors);
+    let exhaust = new PlayerExhaust(this.scene, x, y);
+    sprite.setExhaust(exhaust);
 
     this.displayList.add(sprite);
     this.updateList.add(sprite);
+    this.displayList.add(exhaust);
+    this.updateList.add(exhaust);
+
     // this.scene.physics.world.enableBody(sprite, Phaser.Physics.Arcade.DYNAMIC_BODY);
     // this defines the collision area but it will be better defined using specific tool
     // sprite.body.setSize(sprite.width * 0.95, sprite.height * 0.8);
